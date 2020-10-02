@@ -1,4 +1,7 @@
 import {
+    SET_IS_INITIALIZED,
+    SET_IS_SAVED,
+    SET_BOARD,
     SET_ACTIVITY,
     UPDATE_ACTIVITY,
     ADD_ACTIVITY,
@@ -7,24 +10,49 @@ import {
     OPEN_MODAL,
 } from './types';
 
-export const openModal = (open, type, columnId, activityId) => async (
+export const openModal = (open, type, columnID, activityID) => async (
     dispatch
 ) => {
     dispatch({
         type: OPEN_MODAL,
-        payload: { open, type, columnId, activityId },
+        payload: { open, type, columnID, activityID },
     });
 };
 
-export const addActivity = (newActivity, columnId) => async (dispatch) => {
-    dispatch({ type: ADD_ACTIVITY, payload: { newActivity, columnId } });
+export const setIsInitialized = (isInitialized) => async (dispatch) => {
+    dispatch({
+        type: SET_IS_INITIALIZED,
+        isInitialized,
+    });
 };
 
-export const deleteActivity = (activityId, columnId) => async (dispatch) => {
-    dispatch({ type: DELETE_ACTIVITY, payload: { activityId, columnId } });
+export const setIsSaved = (isSaved) => async (dispatch) => {
+    dispatch({
+        type: SET_IS_SAVED,
+        isSaved,
+    });
 };
 
-export const moveActivity = (destination, source, draggableId) => async (
+export const setBoard = (activities, columns, columnOrder) => async (
+    dispatch
+) => {
+    dispatch({
+        type: SET_BOARD,
+        activities,
+        columns,
+        columnOrder,
+    });
+};
+
+export const addActivity = (newActivity, columnID) => async (dispatch) => {
+    dispatch({ type: ADD_ACTIVITY, newActivity, columnID });
+};
+
+export const deleteActivity = (activityID, columnID) => async (dispatch) => {
+    dispatch({ type: DELETE_ACTIVITY, payload: { activityID, columnID } });
+};
+
+export const moveActivity = (destination, source, draggableID) => async (
     dispatch
 ) => {
     // If item has not been moved
@@ -38,15 +66,16 @@ export const moveActivity = (destination, source, draggableId) => async (
 
     dispatch({
         type: MOVE_ACTIVITY,
-        payload: { destination, source, draggableId },
+        destination,
+        source,
+        draggableID,
     });
 };
 
 export const setActivity = (id) => async (dispatch) => {
-    dispatch({ type: SET_ACTIVITY, payload: { id } });
+    dispatch({ type: SET_ACTIVITY, id });
 };
 
 export const updateActivity = (activity) => async (dispatch) => {
-    console.log(activity);
     dispatch({ type: UPDATE_ACTIVITY, payload: { activity } });
 };

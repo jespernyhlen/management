@@ -49,16 +49,18 @@ const newItemTemplate = {
     title: '',
     content: '',
     date: '',
-    notification: {
-        color: '',
-        content: '',
-    },
+    notification: [
+        {
+            color: '',
+            content: '',
+        },
+    ],
 };
 
 function ActivityForm({
     addActivity,
     updateActivity,
-    columnId,
+    columnID,
     openModal,
     modalOpen,
     modalType,
@@ -68,8 +70,9 @@ function ActivityForm({
 }) {
     const [newItem, setNewItem] = useState(newItemTemplate);
     const isUpdate = modalType === 'edit';
-    let isActiveActivity = Object.entries(activeActivity).length !== 0;
 
+    let isActiveActivity = Object.entries(activeActivity).length !== 0;
+    console.log(newItem);
     useEffect(() => {
         if (isUpdate && !isActiveActivity) {
             setActivity(modalIdActivity);
@@ -80,10 +83,12 @@ function ActivityForm({
                 title: activeActivity.title,
                 content: activeActivity.content,
                 date: activeActivity.date,
-                notification: {
-                    color: activeActivity['notification'].color,
-                    content: activeActivity.notification.content,
-                },
+                notification: [
+                    {
+                        color: activeActivity['notification'][0].color,
+                        content: activeActivity.notification[0].content,
+                    },
+                ],
             });
         }
     }, [activeActivity]);
@@ -92,10 +97,9 @@ function ActivityForm({
         if (subName) {
             setNewItem({
                 ...newItem,
-                [name]: {
-                    ...newItem[name],
-                    [subName]: event.target.value,
-                },
+                [name]: [
+                    { ...newItem[name][0], [subName]: event.target.value },
+                ],
             });
         } else {
             setNewItem({ ...newItem, [name]: event.target.value });
@@ -104,7 +108,7 @@ function ActivityForm({
 
     function saveItem() {
         newItem.id = uniqueID();
-        addActivity(newItem, columnId);
+        addActivity(newItem, columnID);
         setCloseModal();
     }
 
@@ -117,7 +121,7 @@ function ActivityForm({
         openModal(false, '', '');
 
         if (newItem !== newItemTemplate) setNewItem(newItemTemplate);
-        if (isActiveActivity) setActivity(null);
+        if (isActiveActivity) setActivity(false);
     }
 
     return (
@@ -172,7 +176,7 @@ function ActivityForm({
                                 name: 'notification-content',
                                 label: 'Notification Text',
                                 type: 'text',
-                                value: newItem.notification.content,
+                                value: newItem.notification[0].content,
                                 handleChange: handleChange(
                                     'notification',
                                     'content'
@@ -189,7 +193,7 @@ function ActivityForm({
                                     <ColorInput
                                         key={color}
                                         checkedColor={
-                                            newItem.notification.color
+                                            newItem.notification[0].color
                                         }
                                         color={color}
                                         handleChange={handleChange}
@@ -243,7 +247,6 @@ const Form = styled.form`
         height: auto;
         width: 100%;
         padding: 8px 12px;
-        margin-top: 0.5rem;
         margin-bottom: 1rem;
         border: 1px solid #ccc;
         outline: 0;
@@ -269,7 +272,6 @@ const ButtonContainer = styled.div`
 
 const Button = styled.button`
     width: 100%;
-    margin-right: 1rem;
     font-size: 0.9rem;
     cursor: pointer;
     transition: 0.1s all;
@@ -291,7 +293,7 @@ const Button = styled.button`
 const ButtonTop = styled.button`
     position: absolute;
     padding: 0.25rem 0.5rem;
-    top: -1.75rem;
+    top: -0.75rem;
     right: -0.75rem;
     background: transparent;
     border: 0;

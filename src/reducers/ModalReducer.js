@@ -14,8 +14,8 @@ export default (state = INITIAL_STATE, action) => {
                 ...state,
                 modalOpen: action.payload.open,
                 modalType: action.payload.type,
-                modalIdColumn: action.payload.columnId,
-                modalIdActivity: action.payload.activityId,
+                modalIdColumn: action.payload.columnID,
+                modalIdActivity: action.payload.activityID,
             };
 
         default:

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 import Dropdown from './Dropdown';
 
-function Activity({ activity, columnId, index }) {
+function Activity({ activity, columnID, index }) {
     const { id, title, content, date, notification } = activity;
 
     const [dropdownShown, setDropdownShown] = useState(false);
@@ -17,9 +17,9 @@ function Activity({ activity, columnId, index }) {
                         ref={provided.innerRef}
                         isDragging={snapshot.isDragging}
                     >
-                        {notification.content && (
-                            <Notification BgColor={notification.color}>
-                                {notification.content}
+                        {notification[0].content && (
+                            <Notification BgColor={notification[0].color}>
+                                {notification[0].content}
                             </Notification>
                         )}
                         <HorisontalDots
@@ -30,8 +30,8 @@ function Activity({ activity, columnId, index }) {
                         <Dropdown
                             dropdownShown={dropdownShown}
                             setDropdownShown={setDropdownShown}
-                            activityId={id}
-                            columnId={columnId}
+                            activityID={id}
+                            columnID={columnID}
                         />
 
                         <Handle {...provided.dragHandleProps}>
@@ -57,8 +57,8 @@ const Container = styled.div`
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
     border-radius: 2.5px;
     color: #282c34;
-    margin-top: 1rem;
-    padding: 0.5rem 0.75rem;
+    margin-top: 1.25rem;
+    padding: 1.25rem 0.75rem 0;
 `;
 
 const Handle = styled.div`
@@ -72,10 +72,10 @@ const Notification = styled.p`
     background: ${(props) => (props.BgColor ? props.BgColor : '#83BB41')};
     font-size: 11px;
     width: fit-content;
-    padding: 1.5px 5px 3px;
+    padding: 1px 6px 1.5px;
     border-radius: 2px;
     color: #fff;
-    top: -1.2rem;
+    top: -0.8rem;
     left: 10px;
     position: absolute;
 `;

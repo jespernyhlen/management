@@ -1,295 +1,369 @@
 import {
+    SET_IS_INITIALIZED,
+    SET_IS_SAVED,
+    SET_BOARD,
     ADD_ACTIVITY,
     UPDATE_ACTIVITY,
     DELETE_ACTIVITY,
-    MOVE_ACTIVITY,
     SET_ACTIVITY,
+    MOVE_ACTIVITY,
 } from '../actions/types';
 
 const INITIAL_STATE = {
+    isInitialized: false,
+    isSaved: true,
     activeActivity: {},
-    activities: {
-        'activity-1': {
-            id: 'activity-1',
-            title: 'Payment gatway redesign.',
-            content:
-                'Modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-04-12',
-            notification: {
-                color: '#da1b1bc7',
-                content: 'Important',
-            },
-        },
-        'activity-2': {
-            id: 'activity-2',
-            title: 'Portfolio v2.',
-            content:
-                'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-08-24',
-            notification: {
-                color: '#83BB41',
-                content: 'Business',
-            },
-        },
-        'activity-3': {
-            id: 'activity-3',
-            title: 'Change hosting provider.',
-            content:
-                'Modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-09-12',
-            notification: {
-                color: '#da1b1bc7',
-                content: 'Important',
-            },
-        },
-        'activity-4': {
-            id: 'activity-4',
-            title: 'Payment gatway redesign.',
-            content:
-                'Modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-09-02',
-            notification: {
-                color: '#da1b1bc7',
-                content: 'Important',
-            },
-        },
-        'activity-5': {
-            id: 'activity-5',
-            title: 'Portfolio v2.',
-            content:
-                'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-10-30',
-            notification: {
-                color: '#83BB41',
-                content: 'Business',
-            },
-        },
-        'activity-6': {
-            id: 'activity-6',
-            title: 'Change hosting provider.',
-            content:
-                'Modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-08-22',
-            notification: {
-                color: '#da1b1bc7',
-                content: 'Important',
-            },
-        },
-        'activity-7': {
-            id: 'activity-7',
-            title: 'Scoping Session TLF.',
-            content:
-                'New intergration with cloud providers. Collaborate seamlessly with engineers, product and scrum masters.',
-            date: '2020-07-07',
-            notification: {
-                color: '#1b73dab3',
-                content: 'Important',
-            },
-        },
-        'activity-8': {
-            id: 'activity-8',
-            title: 'HTML5 Boilerplate.',
-            content:
-                'Collaborate seamlessly with product, engineers and scrum masters.',
-            date: '2020-08-13',
-            notification: {
-                color: '',
-                content: '',
-            },
-        },
-        'activity-9': {
-            id: 'activity-9',
-            title: 'New API intergration.',
-            content:
-                'Intergrate the extension to appear further, build configuration to enhance deployment.',
-            date: '2020-06-04',
-            notification: {
-                color: '#83BB41',
-                content: 'Company',
-            },
-        },
-        'activity-10': {
-            id: 'activity-10',
-            title: 'Analytics, icons, and more.',
-            content:
-                'Modernizr feature detection library, complete with a custom build configuration.',
-            date: '2020-04-26',
-            notification: {
-                color: '',
-                content: '',
-            },
-        },
-    },
-    columns: {
-        'column-1': {
-            id: 'column-1',
-            title: 'IDEAS',
-            color: '#635CA2',
-            activityIds: ['activity-1', 'activity-2', 'activity-3'],
-        },
-        'column-2': {
-            id: 'column-2',
-            title: 'STARTED',
-            color: '#5493D9',
-            activityIds: ['activity-4', 'activity-5', 'activity-6'],
-        },
-        'column-3': {
-            id: 'column-3',
-            title: 'IN PROGRESS',
-            color: '#CF5D73',
-            activityIds: ['activity-7', 'activity-8'],
-        },
-        'column-4': {
-            id: 'column-4',
-            title: 'COMPLETED',
-            color: '#93D048',
-            activityIds: ['activity-9', 'activity-10'],
-        },
-    },
-    columnOrder: ['column-1', 'column-2', 'column-3', 'column-4'],
+    activities: [],
+    columns: [],
+    columnOrder: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
+    let stateCopy;
+
     switch (action.type) {
-        case SET_ACTIVITY:
-            if (action.payload.id) {
-                return {
-                    ...state,
-                    activeActivity: state.activities[action.payload.id],
-                };
-            }
+        case SET_IS_INITIALIZED: {
+            return {
+                ...state,
+                isInitialized: action.isInitialized,
+            };
+        }
+        case SET_IS_SAVED: {
+            return {
+                ...state,
+                isSaved: action.isSaved,
+            };
+        }
+        case SET_BOARD: {
+            // stateCopy = { ...state };
+            console.log(action.activities);
+            console.log(state.activities);
+            // console.log(action.columns);
+            // console.log(state.columns);
+            // console.log(action.columnOrder);
+            // console.log(state.columnOrder);
+
             return {
                 ...state,
                 activeActivity: {},
+                activities: action.activities,
+                columns: action.columns,
+                columnOrder: action.columnOrder,
             };
+        }
+        case SET_ACTIVITY: {
+            stateCopy = { ...state };
+            let ID = action.id;
 
-        case UPDATE_ACTIVITY:
-            console.log(action.payload.activity.id);
-            console.log(action.payload.activity);
+            let active = ID
+                ? stateCopy.activities.filter((activity) => {
+                      return activity.id === ID;
+                  })
+                : null;
+
+            return {
+                ...stateCopy,
+                activeActivity: active ? active[0] : {},
+            };
+        }
+
+        case UPDATE_ACTIVITY: {
+            stateCopy = { ...state };
+            let ID = action.payload.activity.id;
+            let newActivity = action.payload.activity;
+
+            let updatedActivities = stateCopy.activities.map((activity) => {
+                if (activity.id === ID) return (activity = newActivity);
+                return activity;
+            });
 
             return {
                 ...state,
-                activities: {
-                    ...state.activities,
-                    [action.payload.activity.id]: action.payload.activity,
-                },
+                activities: updatedActivities,
             };
-        case ADD_ACTIVITY:
-            let newActivity = action.payload.newActivity;
+        }
+        case ADD_ACTIVITY: {
+            stateCopy = { ...state };
+            let columnID = action.columnID;
+            let activity = action.newActivity;
 
-            let firstColumn = state.columns[action.payload.columnId];
-            let acitivityIds = Array.from(firstColumn.activityIds);
+            let column = stateCopy.columns.filter((column) => {
+                return column.id === columnID;
+            });
+            column = column[0];
 
-            acitivityIds.push(newActivity.id);
-
-            let updatedFirstColumn = {
-                ...firstColumn,
-                activityIds: acitivityIds,
-            };
+            column.activityIDs.push(activity.id);
+            stateCopy.activities.push(activity);
 
             return {
-                ...state,
-                activities: {
-                    ...state.activities,
-                    [newActivity.id]: newActivity,
-                },
-                columns: {
-                    ...state.columns,
-                    [updatedFirstColumn.id]: updatedFirstColumn,
-                },
+                ...stateCopy,
+                activities: stateCopy.activities,
+                columns: stateCopy.columns,
             };
+        }
 
-        case DELETE_ACTIVITY:
-            let columnId = action.payload.columnId;
-            let activityId = action.payload.activityId;
+        case DELETE_ACTIVITY: {
+            stateCopy = { ...state };
+            let columnID = action.payload.columnID;
+            let activityID = action.payload.activityID;
 
             // Remove Activity from column
-            let column = { ...state.columns[columnId] };
-            let activityIds = column.activityIds;
-            let activityindex = activityIds.indexOf(activityId);
-            activityIds.splice(activityindex, 1);
+            let column = stateCopy.columns.filter((column) => {
+                return column.id === columnID;
+            });
+            column = column[0];
 
-            let updatedColumn = {
-                ...column,
-                activityIds: activityIds,
-            };
-
-            let columns = {
-                ...state.columns,
-                [updatedColumn.id]: updatedColumn,
-            };
+            let activityIDs = column.activityIDs;
+            let activityindex = activityIDs.indexOf(activityID);
+            activityIDs.splice(activityindex, 1);
 
             // Remove Activity from activities
-            let activities = { ...state.activities };
-            delete activities[activityId];
+            let activities = stateCopy.activities.filter((activity) => {
+                return activity.id !== activityID;
+            });
 
             return {
-                ...state,
+                ...stateCopy,
                 activities: activities,
-                columns: columns,
+                columns: stateCopy.columns,
             };
+        }
 
-        case MOVE_ACTIVITY:
-            const { destination, source, draggableId } = action.payload;
-            let updatedState = {};
+        case MOVE_ACTIVITY: {
+            stateCopy = { ...state };
 
-            let fromColumn = state.columns[source.droppableId];
-            let toColumn = state.columns[destination.droppableId];
+            const { destination, source, draggableID } = action;
+            let fromColumn = stateCopy.columns.filter((column) => {
+                return column.id === source.droppableId;
+            });
+            fromColumn = fromColumn[0];
+
+            let toColumn = stateCopy.columns.filter((column) => {
+                return column.id === destination.droppableId;
+            });
+            toColumn = toColumn[0];
 
             // If item is not dropped in same column as it was originally from
             if (fromColumn !== toColumn) {
-                let fromActivityIds = Array.from(fromColumn.activityIds);
-                let toActivityIds = Array.from(toColumn.activityIds);
+                let fromActivityIDs = fromColumn.activityIDs;
+                let toActivityIDs = toColumn.activityIDs;
 
-                fromActivityIds.splice(source.index, 1);
+                fromActivityIDs.splice(source.index, 1);
 
                 let newFromColumn = {
                     ...fromColumn,
-                    activityIds: fromActivityIds,
+                    activityIDs: fromActivityIDs,
                 };
 
-                toActivityIds.splice(destination.index, 0, draggableId);
+                toActivityIDs.splice(destination.index, 0, draggableID);
 
                 let newToColumn = {
                     ...toColumn,
-                    activityIds: toActivityIds,
+                    activityIDs: toActivityIDs,
                 };
 
-                let newValues = {
-                    ...state.columns,
-                    [newToColumn.id]: newToColumn,
-                    [newFromColumn.id]: newFromColumn,
-                };
+                let newColumns = stateCopy.columns.map((column) => {
+                    if (column.id === newFromColumn.id)
+                        return (column = newFromColumn);
+                    if (column.id === newToColumn.id)
+                        return (column = newToColumn);
+                    return column;
+                });
 
-                updatedState = {
-                    ...state,
-                    columns: newValues,
-                };
-            } else {
-                // If item is dropped in same column as it was originally from
-                let fromActivityIds = Array.from(fromColumn.activityIds);
+                console.log(newColumns);
 
-                fromActivityIds.splice(source.index, 1);
-                fromActivityIds.splice(destination.index, 0, draggableId);
-
-                let newFromColumn = {
-                    ...fromColumn,
-                    activityIds: fromActivityIds,
-                };
-
-                let newValues = {
-                    ...state.columns,
-                    [newFromColumn.id]: newFromColumn,
-                };
-
-                updatedState = {
-                    ...state,
-                    columns: newValues,
+                return {
+                    ...stateCopy,
+                    columns: newColumns,
                 };
             }
-            return updatedState;
+            // If item is dropped in same column as it was originally from
+            let fromActivityIDs = fromColumn.activityIDs;
+
+            fromActivityIDs.splice(source.index, 1);
+            fromActivityIDs.splice(destination.index, 0, draggableID);
+
+            let newFromColumn = {
+                ...fromColumn,
+                activityIDs: fromActivityIDs,
+            };
+
+            let newColumns = stateCopy.columns.map((column) => {
+                if (column.id === newFromColumn.id)
+                    return (column = newFromColumn);
+                return column;
+            });
+
+            return {
+                ...stateCopy,
+                columns: newColumns,
+            };
+        }
 
         default:
             return state;
     }
 };
+
+// const INITIAL_STATE = {
+//     activeActivity: {},
+//     activities: [
+//         {
+//             id: 'activity-1',
+//             title: 'Payment gatway redesign.',
+//             content:
+//                 'Modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-04-12',
+//             notification: [
+//                 {
+//                     color: '#da1b1bc7',
+//                     content: 'Important',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-2',
+//             title: 'Portfolio v2.',
+//             content:
+//                 'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-08-24',
+//             notification: [
+//                 {
+//                     color: '#83BB41',
+//                     content: 'Business',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-3',
+//             title: 'Change hosting provider.',
+//             content:
+//                 'Modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-09-12',
+//             notification: [
+//                 {
+//                     color: '#da1b1bc7',
+//                     content: 'Important',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-4',
+//             title: 'Payment gatway redesign.',
+//             content:
+//                 'Modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-09-02',
+//             notification: [
+//                 {
+//                     color: '#da1b1bc7',
+//                     content: 'Important',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-5',
+//             title: 'Portfolio v2.',
+//             content:
+//                 'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-10-30',
+//             notification: [
+//                 {
+//                     color: '#83BB41',
+//                     content: 'Business',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-6',
+//             title: 'Change hosting provider.',
+//             content:
+//                 'Modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-08-22',
+//             notification: [
+//                 {
+//                     color: '#da1b1bc7',
+//                     content: 'Important',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-7',
+//             title: 'Scoping Session TLF.',
+//             content:
+//                 'New intergration with cloud providers. Collaborate seamlessly with engineers, product and scrum masters.',
+//             date: '2020-07-07',
+//             notification: [
+//                 {
+//                     color: '#1b73dab3',
+//                     content: 'Important',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-8',
+//             title: 'HTML5 Boilerplate.',
+//             content:
+//                 'Collaborate seamlessly with product, engineers and scrum masters.',
+//             date: '2020-08-13',
+//             notification: [
+//                 {
+//                     color: '',
+//                     content: '',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-9',
+//             title: 'New API intergration.',
+//             content:
+//                 'Intergrate the extension to appear further, build configuration to enhance deployment.',
+//             date: '2020-06-04',
+//             notification: [
+//                 {
+//                     color: '#83BB41',
+//                     content: 'Company',
+//                 },
+//             ],
+//         },
+//         {
+//             id: 'activity-10',
+//             title: 'Analytics, icons, and more.',
+//             content:
+//                 'Modernizr feature detection library, complete with a custom build configuration.',
+//             date: '2020-04-26',
+//             notification: [
+//                 {
+//                     color: '',
+//                     content: '',
+//                 },
+//             ],
+//         },
+//     ],
+//     columns: [
+//         {
+//             id: 'column-1',
+//             title: 'IDEAS',
+//             color: '#635CA2',
+//             activityIDs: ['activity-1', 'activity-2', 'activity-3'],
+//         },
+//         {
+//             id: 'column-2',
+//             title: 'STARTED',
+//             color: '#5493D9',
+//             activityIDs: ['activity-4', 'activity-5', 'activity-6'],
+//         },
+//         {
+//             id: 'column-3',
+//             title: 'IN PROGRESS',
+//             color: '#CF5D73',
+//             activityIDs: ['activity-7', 'activity-8'],
+//         },
+//         {
+//             id: 'column-4',
+//             title: 'COMPLETED',
+//             color: '#93D048',
+//             activityIDs: ['activity-9', 'activity-10'],
+//         },
+//     ],
+//     columnOrder: ['column-1', 'column-2', 'column-3', 'column-4'],
+// };

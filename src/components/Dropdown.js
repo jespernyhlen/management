@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { deleteActivity, openModal } from './actions';
+import { deleteActivity, openModal } from '../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrashAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -10,8 +10,8 @@ function Dropdown(props) {
         dropdownShown,
         setDropdownShown,
         deleteActivity,
-        activityId,
-        columnId,
+        activityID,
+        columnID,
         openModal,
     } = props;
 
@@ -38,7 +38,7 @@ function Dropdown(props) {
 
     function setModalOpen() {
         // setIsOpen(true);
-        openModal(true, 'edit', columnId, activityId);
+        openModal(true, 'edit', columnID, activityID);
         setIsVisible(false);
         setDropdownShown(false);
     }
@@ -60,7 +60,7 @@ function Dropdown(props) {
                     </DropdownItem>
                     <DropdownItem
                         onClick={() => {
-                            deleteActivity(activityId, columnId);
+                            deleteActivity(activityID, columnID);
                         }}
                     >
                         Delete
@@ -106,14 +106,18 @@ const DropdownContainer = styled.div`
 `;
 
 const DropdownItem = styled.a`
+    color: #666;
     padding: 0.5rem 1rem;
     font-weight: 500;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: 0.05s all;
 
     &:hover {
         background: #ddd;
+        color: #222;
+        text-decoration: none;
         cursor: pointer;
     }
 `;

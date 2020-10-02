@@ -1,23 +1,24 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
-import { openModal } from './actions';
+import { openModal } from '../actions';
 import { Droppable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Activity from './Activity';
-import ActivityForm from './Form/ActivityForm';
+import ActivityForm from '../Form/ActivityForm';
 
 // To optimize, and prevent multiple React renders, React.memo() is used.
 // Similar to usage of shouldComponentUpdate()
 const ActivityList = React.memo((props) => {
-    const { columnId } = props;
+    const { columnID } = props;
+
     return props.activities.map((activity, index) => (
         <Activity
-            key={activity.id}
-            activity={activity}
+            key={activity[0].id}
+            activity={activity[0]}
             index={index}
-            columnId={columnId}
+            columnID={columnID}
         />
     ));
 });
@@ -47,7 +48,7 @@ function Column({
                         >
                             <ActivityList
                                 activities={activities}
-                                columnId={column.id}
+                                columnID={column.id}
                             />
                             {provided.placeholder}
                         </ActivitiesContainer>
@@ -55,7 +56,7 @@ function Column({
                 }}
             </Droppable>
             {modalOpen && modalIdColumn === column.id ? (
-                <ActivityForm columnId={column.id} />
+                <ActivityForm columnID={column.id} />
             ) : null}
             <ButtonSmall onClick={setModalOpen}>
                 <FontAwesomeIcon className='larger' icon={faPlus} />
@@ -88,8 +89,10 @@ const Container = styled.div`
 `;
 
 const Title = styled.h3`
-    font-size: 13px;
+    font-size: 14px;
     color: #222;
+    margin: 0.75rem 0 1.25rem;
+    font-weight: 700;
 `;
 
 const ActivitiesContainer = styled.div`
