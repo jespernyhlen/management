@@ -16,8 +16,8 @@ import {
     FormHeaderText,
     InputFieldWithLabel,
     Label,
-    Button,
-} from '../styles/formStyles';
+} from '../styles/FormStyles';
+import { ButtonContainer, Button } from '../styles/Buttons';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
@@ -91,7 +91,7 @@ const Admin = ({ history }) => {
             });
     };
 
-    const updateForm = () => (
+    const displayForm = () => (
         <form>
             <FormGroup>
                 <InputFieldWithLabel
@@ -139,19 +139,15 @@ const Admin = ({ history }) => {
             </FormGroup>
             <br />
 
-            <div>
-                <Button
-                    bgColor={'#45b791'}
-                    btnType={'main'}
-                    onClick={clickSubmit}
-                >
+            <ButtonContainer>
+                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
                     {buttonText}
                 </Button>
-            </div>
+            </ButtonContainer>
         </form>
     );
 
-    const formContent = () => (
+    return (
         <FormContainer>
             <FormContent>
                 <FormHeader>
@@ -159,19 +155,16 @@ const Admin = ({ history }) => {
                         email={email}
                         size={40}
                         style={{
-                            margin: '0 0 2rem',
-                            margin: '0px 1.5rem 2rem 0',
+                            margin: '0 1.5rem 2rem 0',
                             borderRadius: '5px',
                         }}
                     />
-                    <FormHeaderText>Profile</FormHeaderText>
+                    <FormHeaderText>Admin Settings</FormHeaderText>
                 </FormHeader>
-                {updateForm()}
+                {displayForm()}
             </FormContent>
         </FormContainer>
     );
-
-    return <main>{formContent()}</main>;
 };
 
 export default Admin;

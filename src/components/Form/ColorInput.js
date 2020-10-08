@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-function ColorInput({ checkedColor, color, handleChange }) {
+function ColorInput({ checkedColor, color, handleChange, types }) {
     return (
         <InputContainer className='color' style={{ backgroundColor: color }}>
             <input
@@ -9,7 +9,7 @@ function ColorInput({ checkedColor, color, handleChange }) {
                 name='color'
                 value={color}
                 checked={checkedColor === color}
-                onChange={handleChange('notification', 'color')}
+                onChange={handleChange(types[0], types[1])}
             />
             <i className='checkbox-icon'></i>
         </InputContainer>

@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import GlobalStyles from './styles/globalStyles';
+import GlobalStyles from './styles/GlobalStyles';
 
 // import Board from './Board';
 // import Navbar from './Navbar';

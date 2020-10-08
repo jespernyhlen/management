@@ -4,22 +4,32 @@ import {
     getAuthenticatedUser,
     getCookie,
     removeAuthenticatedUser,
-    updateUser,
 } from '../utils/Helpers';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlus, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
-import Notification from '../components/Notification';
+import styled from 'styled-components';
+import { PageNav, PageNavTitle } from '../styles/Layout';
+import { ButtonContainer, Button } from '../styles/Buttons';
 import {
     moveActivity,
     setBoard,
+    setBoards,
+    setBoardIndex,
     setIsInitialized,
     setIsSaved,
+    openModal,
 } from '../actions';
 
-import styled from 'styled-components';
-import Column from '../components/Column';
+import BoardForm from '../components/Form/BoardForm';
+import SaveButton from '../components/Board/SaveButton';
+import BoardList from '../components/Board/BoardList';
+import DropdownMenu from '../components/Board/DropdownMenu';
+import Column from '../components/Board/Column';
+import ColumnForm from '../components/Form/ColumnForm';
+import ActivityForm from '../components/Form/ActivityForm';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
@@ -29,20 +39,22 @@ const API_URL =
 function Board({
     history,
     board,
-    setBoard,
+    boards,
+    setBoards,
+    boardIndex,
     moveActivity,
     isInitialized,
     setIsInitialized,
-    isSaved,
-    setIsSaved,
+    openModal,
+    modalOpen,
+    modalInfo,
 }) {
-    const [values, setValues] = useState({
-        buttonText: 'Save Changes',
-    });
+    const [dropdownShown, setDropdownShown] = useState(false);
+    const [boardListShown, setBoardListShown] = useState(false);
+
     const onDragEnd = (result) => {
         const { destination, source, draggableId } = result;
         moveActivity(destination, source, draggableId);
-        if (isSaved) setIsSaved(false);
     };
 
     const token = getCookie('token');
@@ -57,10 +69,7 @@ function Board({
                 },
             })
                 .then((response) => {
-                    console.log(response.data);
-                    const { activities, columns, columnOrder } = response.data;
-
-                    setBoard(activities, columns, columnOrder);
+                    setBoards(response.data);
                     setIsInitialized(true);
                 })
                 .catch((error) => {
@@ -73,69 +82,153 @@ function Board({
         }
     }, []);
 
-    const saveBoard = () => {
-        console.log(board);
-        // setValues({ ...values, buttonText: 'Updating' });
-        setValues({ ...values, buttonText: 'Save Changes..' });
-        let data = {
-            activities: board.activities,
-            columns: board.columns,
-            columnOrder: board.columnOrder,
+    function setModalOpen(scope) {
+        let modalInfo = {
+            scope: scope,
+            action: 'create',
+            boardID: boardIndex,
         };
-        axios({
-            method: 'PUT',
-            url: `${API_URL}/board/update`,
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-            data: data,
-        })
-            .then((response) => {
-                console.log(response);
-                setIsSaved(true);
-                setValues({ ...values, buttonText: 'Save Changes' });
-                Notification('Board saved successfully', 'success');
-            })
-            .catch((error) => {
-                console.log(error.response.data.error);
-                Notification(error.response.data.error, 'danger');
-            });
-    };
+        openModal(true, modalInfo);
+    }
+
+    function showFormModal() {
+        let scope = modalInfo.scope;
+
+        if (scope === 'board') return <BoardForm />;
+        if (scope === 'column') return <ColumnForm />;
+        if (scope === 'activity') return <ActivityForm />;
+    }
+
+    let gotBoards = boards.length > 0;
+
     return (
-        <DragDropContext onDragEnd={(e) => onDragEnd(e)}>
-            <Container>
-                {board.columnOrder.map((columnID) => {
-                    let column = board.columns.filter(function (col) {
-                        return col.id === columnID;
-                    });
-                    const activities = column[0].activityIDs.map(
-                        (activityID) => {
-                            return board.activities.filter(function (act) {
-                                return act.id === activityID;
-                            });
-                        }
-                    );
-                    return (
-                        <Column
-                            key={column[0].id}
-                            column={column[0]}
-                            activities={activities}
+        isInitialized && (
+            <>
+                <PageNav>
+                    <PageNavTitle>
+                        Activity Board
+                        {gotBoards ? ' - ' + boards[boardIndex].title : null}
+                    </PageNavTitle>
+                    <HorisontalDots
+                        onClick={() => {
+                            setDropdownShown(true);
+                        }}
+                    />
+                    {gotBoards && (
+                        <DropdownMenu
+                            dropdownShown={dropdownShown}
+                            setDropdownShown={setDropdownShown}
+                            content={{
+                                scope: 'board',
+                                action: 'edit',
+                                boardID: boardIndex,
+                                columnID: '',
+                                activityID: '',
+                                color: board.color,
+                            }}
                         />
-                    );
-                })}
-                <ButtonContainer>
-                    <Button disabled={isSaved} onClick={saveBoard}>
-                        {values.buttonText}
-                    </Button>
-                </ButtonContainer>
-            </Container>
-        </DragDropContext>
+                    )}
+
+                    <ContainerRight>
+                        <ButtonContainer noMargin={true}>
+                            <Button
+                                bgColor={'#3e60ad'}
+                                style={{
+                                    marginRight: '1rem',
+                                }}
+                                onClick={() => {
+                                    setModalOpen('board');
+                                }}
+                            >
+                                <PlusIcon icon={faPlus} /> Add Board
+                            </Button>
+                        </ButtonContainer>
+                        <ButtonContainer noMargin={true}>
+                            <Button
+                                bgColor={'#3e60ad'}
+                                style={{
+                                    marginRight: '1rem',
+                                }}
+                                onClick={() => {
+                                    setBoardListShown(true);
+                                }}
+                            >
+                                <ArrowIcon icon={faAngleDown} /> Choose Board
+                            </Button>
+                        </ButtonContainer>
+
+                        <SaveButton />
+                    </ContainerRight>
+                </PageNav>
+                {gotBoards && (
+                    <>
+                        <SemiNav>
+                            <BoardList
+                                boardListShown={boardListShown}
+                                setBoardListShown={setBoardListShown}
+                            />
+                        </SemiNav>
+                        <DragDropContext onDragEnd={(e) => onDragEnd(e)}>
+                            <Container>
+                                {boards[boardIndex].columnOrder.map(
+                                    (columnID) => {
+                                        let column = boards[
+                                            boardIndex
+                                        ].columns.filter(function (col) {
+                                            return col.id === columnID;
+                                        });
+
+                                        const activities = column[0].activityIDs.map(
+                                            (activityID) => {
+                                                return boards[
+                                                    boardIndex
+                                                ].activities.filter(function (
+                                                    act
+                                                ) {
+                                                    return (
+                                                        act.id === activityID
+                                                    );
+                                                });
+                                            }
+                                        );
+
+                                        return (
+                                            <Column
+                                                key={column[0].id}
+                                                column={column[0]}
+                                                activities={activities}
+                                            />
+                                        );
+                                    }
+                                )}
+
+                                <ButtonSmall
+                                    onClick={() => {
+                                        setModalOpen('column');
+                                    }}
+                                >
+                                    <FontAwesomeIcon
+                                        className='larger'
+                                        icon={faPlus}
+                                    />
+                                </ButtonSmall>
+                            </Container>
+                        </DragDropContext>
+                    </>
+                )}
+                {modalOpen && showFormModal()}
+            </>
+        )
     );
 }
 
 const mapStateToProps = (state) => {
     return {
         board: state.board,
+        boards: state.board.boards,
+        boardIndex: state.board.boardIndex,
+        modalOpen: state.modal.modalOpen,
+        modalInfo: state.modal.info,
         isInitialized: state.board.isInitialized,
         isSaved: state.board.isSaved,
     };
@@ -145,49 +238,77 @@ export default withRouter(
     connect(mapStateToProps, {
         moveActivity,
         setBoard,
+        setBoards,
+        setBoardIndex,
         setIsInitialized,
         setIsSaved,
+        openModal,
     })(Board)
 );
 
-const Container = styled.div`
-    padding: 2rem;
-    display: grid;
-    gap: 1rem;
-    grid-template-columns: repeat(auto-fill, 225px);
-    align-items: start;
-    justify-content: center;
-    max-width: 1080px;
-    margin: 0 auto;
-`;
-
-const ButtonContainer = styled.div`
+const ContainerRight = styled.div`
     display: flex;
-    justify-content: center;
-    margin-top: 1rem;
 `;
 
-const Button = styled.button`
-    width: 100%;
-    font-size: 0.9rem;
+const Container = styled.div`
+    display: flex;
+`;
+
+const SemiNav = styled.div``;
+const PlusIcon = styled(FontAwesomeIcon)`
+    margin-right: 2.5px;
+    font-size: 0.775rem;
+`;
+
+const ArrowIcon = styled(FontAwesomeIcon)`
+    margin-right: 2.5px;
+    margin-bottom: -1px;
+    font-size: 1rem;
+`;
+
+const HorisontalDots = styled.div`
+    width: 13.5px;
+    height: 13.5px;
+    background-image: radial-gradient(circle, #666 1px, #13131300 1.5px);
+    background-size: 100% 33.33%;
+    transform: rotate(90deg);
+    position: absolute;
+    right: 9.5px;
+    top: 8px;
     cursor: pointer;
-    position: relative;
-    text-align: center;
-    opacity: 1;
-    border-radius: 5px;
-    padding: 0.75rem 2.5rem;
-    font-weight: 600;
-    color: #fff;
-    border: 0;
-    background: #5aac44;
+    z-index: 10;
     transition: 0.1s all;
 
     &:hover {
-        opacity: 0.9;
+        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
+    }
+`;
+
+const ButtonSmall = styled.button`
+    padding: 0.25rem 0.35rem;
+    border: 0;
+    border-top: 5px solid;
+    border-color: #3e60ad;
+    cursor: pointer;
+    color: #3a3a3a;
+    background: transparent;
+    font-size: smaller;
+    width: 25px;
+    height: 3rem;
+    background: #ffffff69;
+    border-radius: 2.5px;
+    box-shadow: 0 2.5px 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: 0.1s all;
+
+    path {
+        fill: #666;
     }
 
-    &:disabled {
-        opacity: 0.5;
-        cursor: default;
+    &:hover {
+        background: #fefefe;
     }
 `;

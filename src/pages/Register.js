@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
-import {
-    setClientData,
-    isAuthenticated,
-    getAuthenticatedUser,
-} from '../utils/Helpers';
+import { isAuthenticated } from '../utils/Helpers';
 import Notification from '../components/Notification';
 import {
     FormGroup,
@@ -14,9 +10,10 @@ import {
     FormHeaderText,
     InputFieldWithLabel,
     Label,
-    Button,
     TextWithLink,
-} from '../styles/formStyles';
+} from '../styles/FormStyles';
+import { ButtonContainer, Button } from '../styles/Buttons';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faUser,
@@ -43,14 +40,6 @@ const Register = ({ history }) => {
         setValues({ ...values, [name]: event.target.value });
     };
 
-    const informParent = (response) => {
-        setClientData(response, () => {
-            isAuthenticated() && getAuthenticatedUser().role === 'admin'
-                ? history.push('/admin')
-                : history.push('/private');
-        });
-    };
-
     const clickSubmit = (event) => {
         event.preventDefault();
         setValues({ ...values, buttonText: 'SIGNING UP' });
@@ -75,7 +64,7 @@ const Register = ({ history }) => {
             });
     };
 
-    const signupForm = () => (
+    const displayForm = () => (
         <form>
             <FormGroup>
                 <InputFieldWithLabel
@@ -126,24 +115,20 @@ const Register = ({ history }) => {
             </FormGroup>
             <br />
 
-            <div>
-                <Button
-                    bgColor={'#2c3a5a'}
-                    btnType={'main'}
-                    onClick={clickSubmit}
-                >
+            <ButtonContainer>
+                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
                     {buttonText}
                 </Button>
-            </div>
+            </ButtonContainer>
         </form>
     );
 
-    const formContent = () => (
+    return (
         <FormContainer>
             <FormContent>
                 {isAuthenticated() ? <Redirect to='/' /> : null}
                 <FormHeaderText className=''>Register</FormHeaderText>
-                {signupForm()}
+                {displayForm()}
                 <br />
                 <TextWithLink>
                     Already have an account?
@@ -152,8 +137,6 @@ const Register = ({ history }) => {
             </FormContent>
         </FormContainer>
     );
-
-    return <main>{formContent()}</main>;
 };
 
 export default Register;

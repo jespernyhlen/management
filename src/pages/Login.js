@@ -14,10 +14,11 @@ import {
     FormHeaderText,
     InputFieldWithLabel,
     Label,
-    Button,
     TextWithLink,
     TextLine,
-} from '../styles/formStyles';
+} from '../styles/FormStyles';
+import { ButtonContainer, Button } from '../styles/Buttons';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUnlockAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
@@ -38,14 +39,6 @@ const Login = ({ history }) => {
 
     const handleChange = (name) => (event) => {
         setValues({ ...values, [name]: event.target.value });
-    };
-
-    const informParent = (response) => {
-        setClientData(response, () => {
-            isAuthenticated() && getAuthenticatedUser().role === 'admin'
-                ? history.push('/admin')
-                : history.push('/private');
-        });
     };
 
     const clickSubmit = (event) => {
@@ -76,7 +69,7 @@ const Login = ({ history }) => {
             });
     };
 
-    const signinForm = () => (
+    const displayForm = () => (
         <form>
             <FormGroup>
                 <InputFieldWithLabel
@@ -111,41 +104,35 @@ const Login = ({ history }) => {
                 </Label>
             </FormGroup>
             <br />
-            <div>
-                <Button
-                    bgColor={'#2c3a5a'}
-                    btnType={'main'}
-                    onClick={clickSubmit}
-                >
+            <ButtonContainer>
+                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
                     {buttonText}
                 </Button>
-            </div>
+            </ButtonContainer>
         </form>
     );
 
     return (
-        <main>
-            <FormContainer>
-                <FormContent>
-                    {isAuthenticated() ? <Redirect to='/' /> : null}
-                    <FormHeaderText>Login</FormHeaderText>
-                    {signinForm()}
-                    <br />
-                    <TextWithLink>
-                        Forgot your password?
-                        <Link to='/auth/password/forgot'>Reset Password</Link>
-                    </TextWithLink>
-                    <TextLine>
-                        <span>OR</span>
-                    </TextLine>
+        <FormContainer>
+            <FormContent>
+                {isAuthenticated() ? <Redirect to='/' /> : null}
+                <FormHeaderText>Login</FormHeaderText>
+                {displayForm()}
+                <br />
+                <TextWithLink>
+                    Forgot your password?
+                    <Link to='/auth/password/forgot'>Reset Password</Link>
+                </TextWithLink>
+                <TextLine>
+                    <span>OR</span>
+                </TextLine>
 
-                    <TextWithLink>
-                        Don't have an account?
-                        <Link to='/register'>Register Now</Link>
-                    </TextWithLink>
-                </FormContent>
-            </FormContainer>
-        </main>
+                <TextWithLink>
+                    Don't have an account?
+                    <Link to='/register'>Register Now</Link>
+                </TextWithLink>
+            </FormContent>
+        </FormContainer>
     );
 };
 

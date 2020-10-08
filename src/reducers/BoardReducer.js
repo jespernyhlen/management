@@ -1,7 +1,16 @@
 import {
     SET_IS_INITIALIZED,
     SET_IS_SAVED,
+    ADD_BOARD,
     SET_BOARD,
+    SET_BOARDS,
+    SET_BOARDINDEX,
+    UPDATE_BOARD,
+    DELETE_BOARD,
+    ADD_COLUMN,
+    UPDATE_COLUMN,
+    DELETE_COLUMN,
+    SET_COLUMN,
     ADD_ACTIVITY,
     UPDATE_ACTIVITY,
     DELETE_ACTIVITY,
@@ -12,10 +21,10 @@ import {
 const INITIAL_STATE = {
     isInitialized: false,
     isSaved: true,
+    boardIndex: 0,
     activeActivity: {},
-    activities: [],
-    columns: [],
-    columnOrder: [],
+    activeColumn: {},
+    boards: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -34,81 +43,249 @@ export default (state = INITIAL_STATE, action) => {
                 isSaved: action.isSaved,
             };
         }
-        case SET_BOARD: {
-            // stateCopy = { ...state };
-            console.log(action.activities);
-            console.log(state.activities);
-            // console.log(action.columns);
-            // console.log(state.columns);
-            // console.log(action.columnOrder);
-            // console.log(state.columnOrder);
+        case ADD_BOARD: {
+            stateCopy = { ...state };
+            console.log(state.boards[0]);
 
+            if (!action.board.title) return { ...state };
+
+            stateCopy.boards.push({
+                title: action.board.title,
+                activities: [],
+                columns: [
+                    {
+                        id: 'column-1',
+                        title: 'Example',
+                        color: '#635CA2',
+                        activityIDs: [],
+                    },
+                ],
+                columnOrder: ['column-1'],
+            });
+            return {
+                ...stateCopy,
+                boards: stateCopy.boards,
+                isSaved: false,
+            };
+        }
+
+        case SET_BOARD: {
             return {
                 ...state,
                 activeActivity: {},
                 activities: action.activities,
                 columns: action.columns,
-                columnOrder: action.columnOrder,
+                columnOrder: [...action.columnOrder],
+            };
+        }
+
+        case SET_BOARDS: {
+            return {
+                ...state,
+                boards: action.boards,
+            };
+        }
+
+        case UPDATE_BOARD: {
+            stateCopy = { ...state };
+
+            let ID = action.board.id;
+            let newTitle = action.board.title;
+
+            stateCopy.boards.map((board) => {
+                if (board._id === ID) board.title = newTitle;
+                return board;
+            });
+
+            return {
+                ...stateCopy,
+                boards: stateCopy.boards,
+                isSaved: false,
+            };
+        }
+
+        case DELETE_BOARD: {
+            stateCopy = { ...state };
+
+            stateCopy.boards.splice(action.boardID, 1);
+
+            return {
+                ...stateCopy,
+                boardIndex: 0,
+                isSaved: false,
+            };
+        }
+        case SET_BOARDINDEX: {
+            console.log(action.index);
+            return {
+                ...state,
+                boardIndex: action.index,
+            };
+        }
+
+        case ADD_COLUMN: {
+            stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
+
+            if (!action.column.title) return { ...state };
+
+            currentBoard.columns.push({
+                id: action.column.id,
+                title: action.column.title,
+                color: action.column.color,
+                activityIDs: [],
+            });
+
+            currentBoard.columnOrder.push(action.column.id);
+            return {
+                ...stateCopy,
+                isSaved: false,
+            };
+        }
+
+        case UPDATE_COLUMN: {
+            stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let ID = action.column.id;
+            let newColumn = action.column;
+
+            currentBoard.columns = currentBoard.columns.map((column) => {
+                if (column.id === ID) {
+                    return (column = newColumn);
+                }
+                return column;
+            });
+
+            return {
+                ...stateCopy,
+                isSaved: false,
+            };
+        }
+
+        case DELETE_COLUMN: {
+            stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let columnID = action.columnID;
+
+            // Remove Activity from column
+            let column = currentBoard.columns.filter((column) => {
+                return column.id === columnID;
+            });
+            column = column[0];
+
+            let activityIDs = column.activityIDs;
+
+            activityIDs.forEach((activity) => {
+                let activityindex = activityIDs.indexOf(activity);
+                activityIDs.splice(activityindex, 1);
+            });
+
+            currentBoard.columnOrder = currentBoard.columnOrder.filter(
+                (column) => {
+                    return column !== columnID;
+                }
+            );
+
+            // Remove Activity from activities
+            currentBoard.columns = currentBoard.columns.filter((column) => {
+                return column.id !== columnID;
+            });
+            console.log(currentBoard);
+
+            return {
+                ...stateCopy,
+                isSaved: false,
+            };
+        }
+
+        case SET_COLUMN: {
+            stateCopy = { ...state };
+            console.log(stateCopy);
+
+            let ID = action.columnID;
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let column = {};
+
+            if (ID) {
+                let active = currentBoard.columns.filter((column) => {
+                    return column.id === ID;
+                });
+                column = active[0];
+            }
+
+            return {
+                ...stateCopy,
+                activeColumn: column,
             };
         }
         case SET_ACTIVITY: {
             stateCopy = { ...state };
-            let ID = action.id;
 
-            let active = ID
-                ? stateCopy.activities.filter((activity) => {
-                      return activity.id === ID;
-                  })
-                : null;
+            let ID = action.activityID;
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let activity = {};
+
+            if (ID) {
+                let active = currentBoard.activities.filter((activity) => {
+                    return activity.id === ID;
+                });
+                activity = active[0];
+            }
 
             return {
                 ...stateCopy,
-                activeActivity: active ? active[0] : {},
+                activeActivity: activity,
             };
         }
 
         case UPDATE_ACTIVITY: {
             stateCopy = { ...state };
-            let ID = action.payload.activity.id;
-            let newActivity = action.payload.activity;
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let ID = action.activity.id;
+            let newActivity = action.activity;
 
-            let updatedActivities = stateCopy.activities.map((activity) => {
-                if (activity.id === ID) return (activity = newActivity);
-                return activity;
-            });
+            currentBoard.activities = currentBoard.activities.map(
+                (activity) => {
+                    if (activity.id === ID) {
+                        return (activity = newActivity);
+                    }
+                    return activity;
+                }
+            );
 
             return {
-                ...state,
-                activities: updatedActivities,
+                ...stateCopy,
+                isSaved: false,
             };
         }
         case ADD_ACTIVITY: {
             stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
             let columnID = action.columnID;
             let activity = action.newActivity;
 
-            let column = stateCopy.columns.filter((column) => {
+            let column = currentBoard.columns.filter((column) => {
                 return column.id === columnID;
             });
             column = column[0];
 
             column.activityIDs.push(activity.id);
-            stateCopy.activities.push(activity);
+            currentBoard.activities.push(activity);
 
             return {
                 ...stateCopy,
-                activities: stateCopy.activities,
-                columns: stateCopy.columns,
+                isSaved: false,
             };
         }
 
         case DELETE_ACTIVITY: {
             stateCopy = { ...state };
-            let columnID = action.payload.columnID;
-            let activityID = action.payload.activityID;
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let columnID = action.columnID;
+            let activityID = action.activityID;
 
             // Remove Activity from column
-            let column = stateCopy.columns.filter((column) => {
+            let column = currentBoard.columns.filter((column) => {
                 return column.id === columnID;
             });
             column = column[0];
@@ -118,27 +295,29 @@ export default (state = INITIAL_STATE, action) => {
             activityIDs.splice(activityindex, 1);
 
             // Remove Activity from activities
-            let activities = stateCopy.activities.filter((activity) => {
-                return activity.id !== activityID;
-            });
+            currentBoard.activities = currentBoard.activities.filter(
+                (activity) => {
+                    return activity.id !== activityID;
+                }
+            );
 
             return {
                 ...stateCopy,
-                activities: activities,
-                columns: stateCopy.columns,
+                isSaved: false,
             };
         }
 
         case MOVE_ACTIVITY: {
             stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
 
             const { destination, source, draggableID } = action;
-            let fromColumn = stateCopy.columns.filter((column) => {
+            let fromColumn = currentBoard.columns.filter((column) => {
                 return column.id === source.droppableId;
             });
             fromColumn = fromColumn[0];
 
-            let toColumn = stateCopy.columns.filter((column) => {
+            let toColumn = currentBoard.columns.filter((column) => {
                 return column.id === destination.droppableId;
             });
             toColumn = toColumn[0];
@@ -149,32 +328,10 @@ export default (state = INITIAL_STATE, action) => {
                 let toActivityIDs = toColumn.activityIDs;
 
                 fromActivityIDs.splice(source.index, 1);
-
-                let newFromColumn = {
-                    ...fromColumn,
-                    activityIDs: fromActivityIDs,
-                };
-
                 toActivityIDs.splice(destination.index, 0, draggableID);
-
-                let newToColumn = {
-                    ...toColumn,
-                    activityIDs: toActivityIDs,
-                };
-
-                let newColumns = stateCopy.columns.map((column) => {
-                    if (column.id === newFromColumn.id)
-                        return (column = newFromColumn);
-                    if (column.id === newToColumn.id)
-                        return (column = newToColumn);
-                    return column;
-                });
-
-                console.log(newColumns);
-
                 return {
                     ...stateCopy,
-                    columns: newColumns,
+                    isSaved: false,
                 };
             }
             // If item is dropped in same column as it was originally from
@@ -183,20 +340,11 @@ export default (state = INITIAL_STATE, action) => {
             fromActivityIDs.splice(source.index, 1);
             fromActivityIDs.splice(destination.index, 0, draggableID);
 
-            let newFromColumn = {
-                ...fromColumn,
-                activityIDs: fromActivityIDs,
-            };
-
-            let newColumns = stateCopy.columns.map((column) => {
-                if (column.id === newFromColumn.id)
-                    return (column = newFromColumn);
-                return column;
-            });
-
             return {
                 ...stateCopy,
-                columns: newColumns,
+                isSaved: false,
+
+                // columns: newColumns,
             };
         }
 
@@ -204,166 +352,3 @@ export default (state = INITIAL_STATE, action) => {
             return state;
     }
 };
-
-// const INITIAL_STATE = {
-//     activeActivity: {},
-//     activities: [
-//         {
-//             id: 'activity-1',
-//             title: 'Payment gatway redesign.',
-//             content:
-//                 'Modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-04-12',
-//             notification: [
-//                 {
-//                     color: '#da1b1bc7',
-//                     content: 'Important',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-2',
-//             title: 'Portfolio v2.',
-//             content:
-//                 'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-08-24',
-//             notification: [
-//                 {
-//                     color: '#83BB41',
-//                     content: 'Business',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-3',
-//             title: 'Change hosting provider.',
-//             content:
-//                 'Modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-09-12',
-//             notification: [
-//                 {
-//                     color: '#da1b1bc7',
-//                     content: 'Important',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-4',
-//             title: 'Payment gatway redesign.',
-//             content:
-//                 'Modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-09-02',
-//             notification: [
-//                 {
-//                     color: '#da1b1bc7',
-//                     content: 'Important',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-5',
-//             title: 'Portfolio v2.',
-//             content:
-//                 'Intergration with cloud providers and modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-10-30',
-//             notification: [
-//                 {
-//                     color: '#83BB41',
-//                     content: 'Business',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-6',
-//             title: 'Change hosting provider.',
-//             content:
-//                 'Modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-08-22',
-//             notification: [
-//                 {
-//                     color: '#da1b1bc7',
-//                     content: 'Important',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-7',
-//             title: 'Scoping Session TLF.',
-//             content:
-//                 'New intergration with cloud providers. Collaborate seamlessly with engineers, product and scrum masters.',
-//             date: '2020-07-07',
-//             notification: [
-//                 {
-//                     color: '#1b73dab3',
-//                     content: 'Important',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-8',
-//             title: 'HTML5 Boilerplate.',
-//             content:
-//                 'Collaborate seamlessly with product, engineers and scrum masters.',
-//             date: '2020-08-13',
-//             notification: [
-//                 {
-//                     color: '',
-//                     content: '',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-9',
-//             title: 'New API intergration.',
-//             content:
-//                 'Intergrate the extension to appear further, build configuration to enhance deployment.',
-//             date: '2020-06-04',
-//             notification: [
-//                 {
-//                     color: '#83BB41',
-//                     content: 'Company',
-//                 },
-//             ],
-//         },
-//         {
-//             id: 'activity-10',
-//             title: 'Analytics, icons, and more.',
-//             content:
-//                 'Modernizr feature detection library, complete with a custom build configuration.',
-//             date: '2020-04-26',
-//             notification: [
-//                 {
-//                     color: '',
-//                     content: '',
-//                 },
-//             ],
-//         },
-//     ],
-//     columns: [
-//         {
-//             id: 'column-1',
-//             title: 'IDEAS',
-//             color: '#635CA2',
-//             activityIDs: ['activity-1', 'activity-2', 'activity-3'],
-//         },
-//         {
-//             id: 'column-2',
-//             title: 'STARTED',
-//             color: '#5493D9',
-//             activityIDs: ['activity-4', 'activity-5', 'activity-6'],
-//         },
-//         {
-//             id: 'column-3',
-//             title: 'IN PROGRESS',
-//             color: '#CF5D73',
-//             activityIDs: ['activity-7', 'activity-8'],
-//         },
-//         {
-//             id: 'column-4',
-//             title: 'COMPLETED',
-//             color: '#93D048',
-//             activityIDs: ['activity-9', 'activity-10'],
-//         },
-//     ],
-//     columnOrder: ['column-1', 'column-2', 'column-3', 'column-4'],
-// };

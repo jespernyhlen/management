@@ -1,9 +1,10 @@
 import styled, { css } from 'styled-components';
-import { devices } from './devices';
+import { devices } from './Devices';
 
 export const baseInputStyles = css`
     padding: 7px 0;
     margin-bottom: 5px;
+    margin-top: 5px;
     width: 100%;
     box-shadow: none;
     outline: none;
@@ -130,7 +131,6 @@ export const FormContainer = styled.div`
     width: 100%;
     max-width: 400px;
     background: #fff;
-    margin: 0 auto;
     border-radius: 5px;
     box-shadow: 0 5px 50px rgba(0, 0, 0, 0.05);
 
@@ -168,7 +168,7 @@ export const FormHeader = styled.div`
 `;
 
 export const FormHeaderText = styled.h1`
-    margin: 0 0 30px;
+    margin: 4px 0 30px;
     color: #2c3a5a;
     font-weight: 600;
 
@@ -187,11 +187,11 @@ export const FormGroup = styled.div`
         padding-top: 0;
         padding-bottom: 0;
         color: #777;
-        font-size: 0.8rem;
+        font-size: 0.7rem;
     }
 
     input:-webkit-autofill ~ label {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
         padding-top: 0;
         padding-bottom: 0;
         color: #777;
@@ -205,14 +205,17 @@ export const Label = styled.label`
     align-items: center;
     transition: 0.2s;
     color: #aaa;
+    font-size: 0.8rem;
     font-weight: 700;
 
     @media ${devices.mobile} {
-        font-size: 0.9rem;
+        font-size: 0.7rem;
     }
 
     svg {
-        margin-top: -0.1rem;
+        /* margin-top: -0.1rem; */
+        width: 0.9rem;
+        height: 0.75rem;
     }
 `;
 
@@ -220,7 +223,7 @@ export const InputFieldWithLabel = styled.input`
     ${baseInputStyles}
     border-bottom: 2px solid #bbb;
     color: #000;
-    font-size: 1rem;
+    font-size: 0.9rem;
     background: transparent;
     letter-spacing: 1px;
     transition: all 0.2s;
@@ -241,7 +244,7 @@ export const InputFieldWithLabel = styled.input`
 
     &:placeholder-shown ~ ${Label} {
         cursor: text;
-        top: 20px;
+        top: 25px;
         display: flex;
         align-items: center;
         pointer-events: none;
@@ -252,10 +255,10 @@ export const InputFieldWithLabel = styled.input`
             position: absolute;
             top: 5px;
             transition: 0.2s;
-            color: #45b791;
-            font-size: 0.8rem;
+            color: #2c3a5a;
+            font-size: 0.7rem;
         }
-        border-bottom: 2px solid #45b791;
+        border-bottom: 2px solid #2c3a5a;
     }
     &.read-only {
         border-bottom: 0;
@@ -281,7 +284,7 @@ export const TextLine = styled.p`
     text-align: center;
     border-bottom: 1px solid rgb(130 130 130);
     line-height: 0.1em;
-    margin: 50px 0px 30px;
+    margin: 15px 0px 20px;
 
     span {
         text-transform: capitalize;
@@ -294,29 +297,30 @@ export const TextLine = styled.p`
 
 // Shared button style
 
-export const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 15px;
-`;
+// export const ButtonContainer = styled.div`
+//     display: flex;
+//     justify-content: space-between;
+//     margin-bottom: 15px;
+// `;
 
-export const Button = styled.button`
-    ${baseInputStyles}
-    padding: 12.5px 0;
-    background: ${(props) => (props.bgColor ? props.bgColor : 'blue')};
-    color: #fff;
-    font-size: ${(props) => (props.btnType === 'main' ? '1.2rem' : '1rem')};
-    letter-spacing: 1px;
-    box-shadow: ${(props) =>
-        props.btnType === 'main'
-            ? '2px 5px 10px rgba(0, 0, 0, 0.2)'
-            : '1px 3px 7.5px rgba(0, 0, 0, 0.1)'};
-    width: ${(props) => (props.btnType === 'main' ? '100%' : '48%')};
-    height: 50px;
-    border-radius: 5px;
-    transition: 0.2s;
+// export const Button = styled.button`
+//     ${baseInputStyles}
+//     padding: 12.5px 0;
+//     background: ${(props) => (props.bgColor ? props.bgColor : 'blue')};
+//     color: #fff;
+//     font-size: ${(props) => (props.btnType === 'main' ? '0.9rem' : '1rem')};
+//     font-weight: 700;
+//     letter-spacing: 0.5px;
+//     box-shadow: ${(props) =>
+//         props.btnType === 'main'
+//             ? '2px 5px 10px rgba(0, 0, 0, 0.2)'
+//             : '1px 3px 7.5px rgba(0, 0, 0, 0.1)'};
+//     width: ${(props) => (props.btnType === 'main' ? '100%' : '48%')};
+//     height: 50px;
+//     border-radius: 2.5px;
+//     transition: 0.2s;
 
-    &:hover {
-        filter: brightness(1.15);
-    }
-`;
+//     &:hover {
+//         filter: brightness(1.15);
+//     }
+// `;

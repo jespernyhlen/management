@@ -5,42 +5,19 @@ import {
     setActivity,
     addActivity,
     openModal,
-} from '../actions';
+    setIsSaved,
+} from '../../actions';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import ColorInput from './ColorInput';
 import FieldInput from './FieldInput';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { ButtonContainer, Button } from '../../styles/Buttons';
+import { Colors } from '../../styles/Colors';
+import { ModalStyle } from '../../styles/ModalStyle';
 
 import { v4 as uniqueID } from 'uuid';
-
-const styledModal = {
-    content: {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        border: '0px',
-        overflow: 'auto',
-        borderRadius: '4px',
-        outline: 'none',
-        padding: '20px',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        maxWidth: '400px',
-        background: '#f4f5f7',
-    },
-};
-const colors = [
-    '#da1b1bc7',
-    '#1b73dab3',
-    '#83BB41',
-    '#F38630',
-    '#ffc107',
-    '#673ab7',
-];
 
 Modal.setAppElement('#root');
 
@@ -60,22 +37,20 @@ const newItemTemplate = {
 function ActivityForm({
     addActivity,
     updateActivity,
-    columnID,
     openModal,
     modalOpen,
-    modalType,
-    modalIdActivity,
+    modalInfo,
     setActivity,
     activeActivity,
 }) {
     const [newItem, setNewItem] = useState(newItemTemplate);
-    const isUpdate = modalType === 'edit';
+    const isUpdate = modalInfo.action === 'edit';
 
     let isActiveActivity = Object.entries(activeActivity).length !== 0;
-    console.log(newItem);
+
     useEffect(() => {
         if (isUpdate && !isActiveActivity) {
-            setActivity(modalIdActivity);
+            setActivity(modalInfo.activityID);
         }
         if (isUpdate && isActiveActivity) {
             setNewItem({
@@ -108,7 +83,7 @@ function ActivityForm({
 
     function saveItem() {
         newItem.id = uniqueID();
-        addActivity(newItem, columnID);
+        addActivity(newItem, modalInfo.columnID);
         setCloseModal();
     }
 
@@ -118,7 +93,7 @@ function ActivityForm({
     }
 
     function setCloseModal() {
-        openModal(false, '', '');
+        openModal(false);
 
         if (newItem !== newItemTemplate) setNewItem(newItemTemplate);
         if (isActiveActivity) setActivity(false);
@@ -129,14 +104,25 @@ function ActivityForm({
             <Modal
                 isOpen={modalOpen}
                 onRequestClose={setCloseModal}
-                style={styledModal}
-                contentLabel='Example Modal'
+                style={{
+                    content: {
+                        ...ModalStyle,
+                        borderTop: '5px solid',
+                        borderColor: modalInfo.color,
+                    },
+                }}
+                contentLabel='Activity Form'
             >
                 <Container>
-                    <ButtonTop top onClick={setCloseModal}>
-                        <FontAwesomeIcon className='larger' icon={faTimes} />
-                    </ButtonTop>
-                    <Title>{modalType} Activity</Title>
+                    <Header>
+                        <Title>{modalInfo.action} Activity </Title>
+                        <ButtonTop top onClick={setCloseModal}>
+                            <FontAwesomeIcon
+                                className='larger'
+                                icon={faTimes}
+                            />
+                        </ButtonTop>
+                    </Header>
                     <Form>
                         <FieldInput
                             values={{
@@ -186,9 +172,9 @@ function ActivityForm({
                             }}
                         />
 
-                        <label htmlFor='color'>Notification Color:</label>
+                        <label htmlFor='color'>Notification Color</label>
                         <div>
-                            {colors.map((color) => {
+                            {Colors.map((color) => {
                                 return (
                                     <ColorInput
                                         key={color}
@@ -197,14 +183,18 @@ function ActivityForm({
                                         }
                                         color={color}
                                         handleChange={handleChange}
+                                        types={['notification', 'color']}
                                     />
                                 );
                             })}
                         </div>
                     </Form>
                     <ButtonContainer>
-                        <Button onClick={isUpdate ? updateItem : saveItem}>
-                            Save
+                        <Button
+                            bgColor={'#3e60ad'}
+                            onClick={isUpdate ? updateItem : saveItem}
+                        >
+                            Update
                         </Button>
                     </ButtonContainer>
                 </Container>
@@ -215,9 +205,9 @@ function ActivityForm({
 
 const mapStateToProps = (state) => {
     return {
+        boardIndex: state.board.boardIndex,
         modalOpen: state.modal.modalOpen,
-        modalType: state.modal.modalType,
-        modalIdActivity: state.modal.modalIdActivity,
+        modalInfo: state.modal.info,
         activeActivity: state.board.activeActivity,
     };
 };
@@ -227,16 +217,24 @@ export default connect(mapStateToProps, {
     updateActivity,
     openModal,
     setActivity,
+    setIsSaved,
 })(ActivityForm);
 
 const Container = styled.div`
     position: relative;
 `;
 
+const Header = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 4px 0 30px;
+`;
+
 const Title = styled.h2`
-    text-align: center;
-    color: #222;
+    color: #151515;
+    font-weight: 700;
     text-transform: capitalize;
+    font-size: 1.2rem;
 `;
 
 const Form = styled.form`
@@ -264,37 +262,8 @@ const Form = styled.form`
     }
 `;
 
-const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    margin-top: 1rem;
-`;
-
-const Button = styled.button`
-    width: 100%;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: 0.1s all;
-    position: relative;
-    text-align: center;
-    opacity: 1;
-    border-radius: 5px;
-    padding: 0.75rem 2.5rem;
-    font-weight: 600;
-    color: #fff;
-    border: 0;
-    background: #5aac44;
-
-    &:hover {
-        opacity: 0.9;
-    }
-`;
-
 const ButtonTop = styled.button`
-    position: absolute;
     padding: 0.25rem 0.5rem;
-    top: -0.75rem;
-    right: -0.75rem;
     background: transparent;
     border: 0;
     cursor: pointer;

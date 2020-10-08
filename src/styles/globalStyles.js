@@ -1,5 +1,5 @@
 import { createGlobalStyle } from 'styled-components';
-import { devices } from './devices';
+import { devices } from './Devices';
 
 const GlobalStyles = createGlobalStyle`
 
@@ -11,6 +11,15 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: inherit;
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin-bottom: 0;
+}
+
 html {
     font-size: 14px;
     box-sizing: border-box;
@@ -20,7 +29,8 @@ html {
 
 
 body {
-    /* font-family: "Lato", sans-serif; */
+    font-family: "Lato", sans-serif;
+    letter-spacing: 0.5px;
     /* box-sizing: border-box; */
     /* letter-spacing: 0.5px; */
     background: linear-gradient(45deg, #e3e3ea, #fcfcff);
@@ -33,18 +43,22 @@ body {
 #root {
     width: 100%;
     word-break: break-word;
-    background: linear-gradient(225deg, #fff, #ddd);;
+    background: linear-gradient(225deg,#F6F7FA,#ECEDF5);
     &.navigation-open {
         max-height: 100vh;
         overflow-y: hidden;
     }
+    display: flex;
+
 }
 
 main {
     min-height: calc(100vh - 3.5rem);
+    width: 100%;
+    margin: 2rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* justify-content: center; */
 
     @media ${devices.tablet} {
         min-height: auto;
@@ -55,10 +69,12 @@ main {
 
 .ReactModal__Overlay--after-open {
     background-color: #060606bf !important;
+    z-index: 10;
 }
 
 .react-confirm-alert-overlay {
     z-index: 100;
+    background-color: #060606bf !important;
 }
 
 `;

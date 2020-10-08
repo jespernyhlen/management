@@ -5,6 +5,16 @@ import {
     getAuthenticatedUser,
     removeAuthenticatedUser,
 } from '../utils/Helpers';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faHome,
+    faUser,
+    faTasks,
+    faSignOutAlt,
+    faSignInAlt,
+    faUserPlus,
+} from '@fortawesome/free-solid-svg-icons';
+import Gravatar from 'react-gravatar';
 
 import styled from 'styled-components';
 import { confirmAlert } from 'react-confirm-alert';
@@ -48,6 +58,30 @@ const Nav = ({ history }) => {
 
     return (
         <Navbar>
+            {isAuthenticated() && (
+                <NavProfileContainer>
+                    <NavProfileImage>
+                        <Gravatar
+                            email={getAuthenticatedUser().email}
+                            size={50}
+                            style={{
+                                margin: '0 auto',
+                                borderRadius: '50%',
+                            }}
+                        />
+                    </NavProfileImage>
+
+                    <NavProfileName>
+                        {getAuthenticatedUser().name}
+                    </NavProfileName>
+                    <NavProfileEmail>
+                        {getAuthenticatedUser().email}
+                    </NavProfileEmail>
+                    <NavProfileRole>
+                        {getAuthenticatedUser().role}
+                    </NavProfileRole>
+                </NavProfileContainer>
+            )}
             <NavList className='nav'>
                 <li className='nav-item' style={{ alignSelf: 'center' }}>
                     <Link
@@ -56,6 +90,7 @@ const Nav = ({ history }) => {
                             isActive('/') ? 'nav-link active' : 'nav-link'
                         }
                     >
+                        <FontAwesomeIcon className='larger' icon={faHome} />
                         Home
                     </Link>
                 </li>
@@ -74,6 +109,10 @@ const Nav = ({ history }) => {
                                         : 'nav-link'
                                 }
                             >
+                                <FontAwesomeIcon
+                                    className='larger'
+                                    icon={faSignInAlt}
+                                />
                                 Login
                             </Link>
                         </li>
@@ -89,6 +128,10 @@ const Nav = ({ history }) => {
                                         : 'nav-link'
                                 }
                             >
+                                <FontAwesomeIcon
+                                    className='larger'
+                                    icon={faUserPlus}
+                                />
                                 Register
                             </Link>
                         </li>
@@ -105,7 +148,8 @@ const Nav = ({ history }) => {
                             }
                             to='/private'
                         >
-                            {getAuthenticatedUser().name}
+                            <FontAwesomeIcon className='larger' icon={faUser} />
+                            Profile
                         </Link>
                     </li>
                 )}
@@ -120,7 +164,8 @@ const Nav = ({ history }) => {
                             }
                             to='/admin'
                         >
-                            {getAuthenticatedUser().name}
+                            <FontAwesomeIcon className='larger' icon={faUser} />
+                            Profile
                         </Link>
                     </li>
                 )}
@@ -139,6 +184,10 @@ const Nav = ({ history }) => {
                                 }
                                 to='/board'
                             >
+                                <FontAwesomeIcon
+                                    className='larger'
+                                    icon={faTasks}
+                                />
                                 Board
                             </Link>
                         </li>
@@ -153,6 +202,10 @@ const Nav = ({ history }) => {
                                     confirmAlert(options);
                                 }}
                             >
+                                <FontAwesomeIcon
+                                    className='larger'
+                                    icon={faSignOutAlt}
+                                />
                                 Logout
                             </span>
                         </li>
@@ -166,48 +219,94 @@ const Nav = ({ history }) => {
 export default withRouter(Nav);
 
 const Navbar = styled.nav`
-    background: #f9f9f9;
+    background: #fefefe;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    min-width: 220px;
+    padding: 1.5rem;
+`;
+
+const NavProfileContainer = styled.div`
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 3rem;
+    margin-top: 2rem;
+`;
+
+const NavProfileImage = styled.div`
+    text-align: center;
+    margin-bottom: 1rem;
+`;
+
+const NavProfileName = styled.p`
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+`;
+
+const NavProfileEmail = styled.p`
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+    color: #666;
+`;
+const NavProfileRole = styled(NavProfileEmail)`
+    text-transform: capitalize;
 `;
 
 const NavList = styled.ul`
     max-width: 1260px;
     margin: 0 auto;
-    height: 3.5rem;
+    display: flex;
+    flex-direction: column;
 
     li {
         height: 100%;
+        width: 100%;
+        margin-top: 0.75rem;
     }
 
     a.nav-link,
     span.nav-link {
-        color: #222;
-        padding: 1.125rem 1rem 1rem;
-        font-size: 0.85rem;
-        font-weight: 800;
-        border: none;
         outline: none;
+        border: none;
+        color: #888;
+        font-size: 0.9rem;
+        font-weight: 600;
         letter-spacing: 0.5px;
-        height: 100%;
-        transition: 0.1s all ease-in;
+        width: 100%;
+        height: 40px;
+        align-items: end;
+        display: flex;
+        padding: 12.5px 17.5px 30px;
+        -webkit-transition: 0.2s;
+        transition: 0.2s;
+        border-left: 4px solid;
     }
     a.nav-link:hover,
     span.nav-link:hover {
-        border: none;
+        color: #222;
         outline: none;
-        color: #636363;
     }
 
     a.nav-link.active {
-        color: #109c6f;
-        /* border-bottom: 3px solid #109c6f; */
+        color: #fff;
+        color: #3e60ad;
+        border-left: 4px solid #3e60ad;
+    }
+
+    svg {
+        margin-right: 1.5rem;
+    }
+
+    .svg-inline--fa {
+        width: 1rem;
+        height: 1rem;
+        margin-top: 1px;
     }
 `;
 
 const ConfirmAlertBody = styled.div`
     font-family: inherit;
     text-align: center;
-    border-radius: 0;
+    border-radius: 2.5px;
     padding: 30px 40px;
     background: #fff;
     box-shadow: 0 20px 75px rgba(0, 0, 0, 0.13);
@@ -224,26 +323,29 @@ const ConfirmHeader = styled.div`
 const ConfirmAlertButtonGroup = styled.div`
     display: flex;
     justify-content: center;
-    margin-top: 30px;
+    margin-top: 20px;
 `;
 
 const AlertButton = styled.button`
     outline: none;
     border: none;
+    border-radius: 2.5px;
     display: inline-block;
-    padding: 7px 0;
+    padding: 10px 14px;
     margin-right: 10px;
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
     cursor: pointer;
     width: 80px;
-    background: #45b791;
+    background: #3e60ad;
+
     color: #fff;
-    letter-spacing: 1px;
-    box-shadow: 2px 5px 8px rgba(0, 0, 0, 0.2);
-    transition: 0.15s background-color ease-in-out;
+    letter-spacing: 0.5px;
+    box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);
+    transition: 0.15s opacity;
 
     &:hover {
-        background-color: #48daaa;
+        opacity: 0.8;
     }
 `;

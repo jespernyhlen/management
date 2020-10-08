@@ -1,13 +1,13 @@
 import React from 'react';
-import styled, { css } from 'styled-components';
-import { devices } from '../styles/devices';
-import Nav from '../layout/Navbar';
+import styled from 'styled-components';
+import { devices } from '../styles/Devices';
 
 const Home = ({ history }) => {
     return (
         <>
-            <Main>
+            <Container>
                 <HeaderText>Management Boilerplate</HeaderText>
+
                 <Text>
                     Authentication via Facebook/Google and server-side
                     registration
@@ -15,14 +15,14 @@ const Home = ({ history }) => {
                     <br />
                     MongoDB, Express, React and Node.js
                 </Text>
-            </Main>
+            </Container>
         </>
     );
 };
 
 export default Home;
 
-const Main = styled.main`
+const Container = styled.div`
     @media ${devices.tablet} {
         min-height: calc(100vh - 3.5rem);
     }
@@ -30,7 +30,7 @@ const Main = styled.main`
 
 const HeaderText = styled.h1`
     width: fit-content;
-    background: #45b791;
+    background: #5595da;
     padding: 20px 40px;
     font-weight: 600;
     font-size: 4.2rem;

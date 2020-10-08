@@ -8,8 +8,8 @@ import {
     FormHeaderText,
     InputFieldWithLabel,
     Label,
-    Button,
-} from '../styles/formStyles';
+} from '../styles/FormStyles';
+import { ButtonContainer, Button } from '../styles/Buttons';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
@@ -53,7 +53,7 @@ const ForgotPassword = () => {
             });
     };
 
-    const passwordForgotForm = () => (
+    const displayForm = () => (
         <form>
             <FormGroup>
                 <InputFieldWithLabel
@@ -68,28 +68,22 @@ const ForgotPassword = () => {
             </FormGroup>
             <br />
 
-            <div>
-                <Button
-                    bgColor={'#2c3a5a'}
-                    btnType={'main'}
-                    onClick={clickSubmit}
-                >
+            <ButtonContainer>
+                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
                     {buttonText}
                 </Button>
-            </div>
+            </ButtonContainer>
         </form>
     );
 
-    const formContent = () => (
+    return (
         <FormContainer>
             <FormContent>
                 <FormHeaderText>Reset Password</FormHeaderText>
-                {passwordForgotForm()}
+                {displayForm()}
             </FormContent>
         </FormContainer>
     );
-
-    return <main>{formContent()}</main>;
 };
 
 export default ForgotPassword;

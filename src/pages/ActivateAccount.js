@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
 import Notification from '../components/Notification';
 import {
     FormContainer,
     FormContent,
     FormHeaderText,
-    Button,
-} from '../styles/formStyles';
+} from '../styles/FormStyles';
+import { ButtonContainer, Button } from '../styles/Buttons';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
@@ -16,7 +15,6 @@ const API_URL =
 
 const ActivateAccount = ({ match }) => {
     const [values, setValues] = useState({
-        name: '',
         token: '',
         show: true,
         buttonText: 'Activate',
@@ -24,13 +22,12 @@ const ActivateAccount = ({ match }) => {
 
     useEffect(() => {
         let token = match.params.token;
-        let { name } = jwt.decode(token);
         if (token) {
-            setValues({ ...values, name, token });
+            setValues({ ...values, token });
         }
     }, []);
 
-    const { name, token, show, buttonText } = values;
+    const { token, buttonText } = values;
 
     const clickSubmit = (event) => {
         event.preventDefault();
@@ -53,24 +50,18 @@ const ActivateAccount = ({ match }) => {
             });
     };
 
-    const activationLink = () => (
-        <div>
-            <Button bgColor={'#2c3a5a'} btnType={'main'} onClick={clickSubmit}>
-                {buttonText}
-            </Button>
-        </div>
-    );
-
-    const formContent = () => (
+    return (
         <FormContainer>
             <FormContent>
                 <FormHeaderText>Activate Account</FormHeaderText>
-                {activationLink()}
+                <ButtonContainer>
+                    <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
+                        {buttonText}
+                    </Button>
+                </ButtonContainer>
             </FormContent>
         </FormContainer>
     );
-
-    return <main>{formContent()}</main>;
 };
 
 export default ActivateAccount;

@@ -1,17 +1,27 @@
 import React, { useState, useRef, useEffect } from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { deleteActivity, openModal } from '../actions';
+import {
+    deleteBoard,
+    deleteColumn,
+    deleteActivity,
+    openModal,
+} from '../../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPen, faTrashAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+    DropdownContainer,
+    DropdownItem,
+    IconContainer,
+} from '../../styles/Dropdown';
 
-function Dropdown(props) {
+function BoardDropdown(props) {
     const {
         dropdownShown,
         setDropdownShown,
+        deleteBoard,
+        deleteColumn,
         deleteActivity,
-        activityID,
-        columnID,
+        content,
         openModal,
     } = props;
 
@@ -37,10 +47,26 @@ function Dropdown(props) {
     };
 
     function setModalOpen() {
-        // setIsOpen(true);
-        openModal(true, 'edit', columnID, activityID);
+        let modalInfo = content;
+        openModal(true, modalInfo);
         setIsVisible(false);
         setDropdownShown(false);
+    }
+
+    function deleteContent(type) {
+        switch (type) {
+            case 'board':
+                deleteBoard(content.boardID);
+                break;
+            case 'column':
+                deleteColumn(content.columnID);
+                break;
+            case 'activity':
+                deleteActivity(content.activityID, content.columnID);
+                break;
+            default:
+                break;
+        }
     }
 
     return (
@@ -49,7 +75,6 @@ function Dropdown(props) {
                 <DropdownContainer ref={wrapperRef}>
                     <DropdownItem
                         onClick={() => {
-                            // deleteActivity(activityId, columnId);
                             setModalOpen();
                         }}
                     >
@@ -60,7 +85,8 @@ function Dropdown(props) {
                     </DropdownItem>
                     <DropdownItem
                         onClick={() => {
-                            deleteActivity(activityID, columnID);
+                            setDropdownShown(false);
+                            deleteContent(content.scope);
                         }}
                     >
                         Delete
@@ -83,53 +109,11 @@ function Dropdown(props) {
     );
 }
 
-const mapStateToProps = (state) => ({});
+const mapStateToProps = (state) => ({ boardIndex: state.board.boardIndex });
 
 export default connect(mapStateToProps, {
+    deleteBoard,
+    deleteColumn,
     deleteActivity,
     openModal,
-})(Dropdown);
-
-const DropdownContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    box-shadow: 0 7.5px 20px rgba(0, 0, 0, 0.1);
-    border-radius: 2.5px;
-    position: absolute;
-    z-index: 5;
-    top: 1.25rem;
-    left: -1.5px;
-    width: calc(100% + 2.5px);
-    height: auto;
-    padding: 0.75rem 0;
-`;
-
-const DropdownItem = styled.a`
-    color: #666;
-    padding: 0.5rem 1rem;
-    font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: 0.05s all;
-
-    &:hover {
-        background: #ddd;
-        color: #222;
-        text-decoration: none;
-        cursor: pointer;
-    }
-`;
-
-const IconContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 20px;
-    height: 20px;
-
-    .larger {
-        font-size: larger;
-    }
-`;
+})(BoardDropdown);
