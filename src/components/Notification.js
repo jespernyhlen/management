@@ -13,6 +13,11 @@ const Notification = (noteText, noteType) => {
             duration: 3000,
             showIcon: true,
         },
+        slidingExit: {
+            duration: 100,
+            timingFunction: 'ease-out',
+            delay: 0,
+        },
     });
 };
 

@@ -47,8 +47,6 @@ const Private = ({ history }) => {
             },
         })
             .then((response) => {
-                console.log(response.data);
-
                 const { role, name, email } = response.data;
                 setValues({ ...values, role, name, email });
             })

@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { devices } from '../styles/Devices';
 import axios from 'axios';
 import {
     getAuthenticatedUser,
@@ -7,8 +10,6 @@ import {
 } from '../utils/Helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { withRouter } from 'react-router-dom';
-import { connect } from 'react-redux';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { PageNav, PageNavTitle } from '../styles/Layout';
@@ -36,19 +37,24 @@ const API_URL =
         ? 'http://localhost:8888/api'
         : process.env.REACT_APP_API;
 
-function Board({
-    history,
-    board,
-    boards,
-    setBoards,
-    boardIndex,
-    moveActivity,
-    isInitialized,
-    setIsInitialized,
-    openModal,
-    modalOpen,
-    modalInfo,
-}) {
+function Board(props) {
+    const {
+        width,
+        history,
+        board,
+        boards,
+        setBoards,
+        boardIndex,
+        moveActivity,
+        isInitialized,
+        setIsInitialized,
+        openModal,
+        modalOpen,
+        modalInfo,
+    } = props;
+
+    console.log(width);
+
     const [dropdownShown, setDropdownShown] = useState(false);
     const [boardListShown, setBoardListShown] = useState(false);
 
@@ -58,6 +64,8 @@ function Board({
     };
 
     const token = getCookie('token');
+    /* Rewrite the "useViewport" hook to pull the width and height values
+   out of the context instead of calculating them itself */
 
     useEffect(() => {
         if (!isInitialized) {
@@ -109,11 +117,7 @@ function Board({
                         Activity Board
                         {gotBoards ? ' - ' + boards[boardIndex].title : null}
                     </PageNavTitle>
-                    <HorisontalDots
-                        onClick={() => {
-                            setDropdownShown(true);
-                        }}
-                    />
+                    <HorisontalDots onClick={() => setDropdownShown(true)} />
                     {gotBoards && (
                         <DropdownMenu
                             dropdownShown={dropdownShown}
@@ -131,32 +135,17 @@ function Board({
 
                     <ContainerRight>
                         <ButtonContainer noMargin={true}>
-                            <Button
-                                bgColor={'#3e60ad'}
-                                style={{
-                                    marginRight: '1rem',
-                                }}
-                                onClick={() => {
-                                    setModalOpen('board');
-                                }}
-                            >
-                                <PlusIcon icon={faPlus} /> Add Board
-                            </Button>
+                            <NavButton onClick={() => setModalOpen('board')}>
+                                <PlusIcon icon={faPlus} />
+                                {width > 1024 && 'Add Board'}
+                            </NavButton>
                         </ButtonContainer>
                         <ButtonContainer noMargin={true}>
-                            <Button
-                                bgColor={'#3e60ad'}
-                                style={{
-                                    marginRight: '1rem',
-                                }}
-                                onClick={() => {
-                                    setBoardListShown(true);
-                                }}
-                            >
-                                <ArrowIcon icon={faAngleDown} /> Choose Board
-                            </Button>
+                            <NavButton onClick={() => setBoardListShown(true)}>
+                                <ArrowIcon icon={faAngleDown} />
+                                {width > 1024 && 'Choose Board'}
+                            </NavButton>
                         </ButtonContainer>
-
                         <SaveButton />
                     </ContainerRight>
                 </PageNav>
@@ -172,30 +161,23 @@ function Board({
                             <Container>
                                 {boards[boardIndex].columnOrder.map(
                                     (columnID) => {
-                                        let column = boards[
-                                            boardIndex
-                                        ].columns.filter(function (col) {
-                                            return col.id === columnID;
-                                        });
+                                        let i = boardIndex;
+                                        let column = boards[i].columns.find(
+                                            (col) => col.id === columnID
+                                        );
 
-                                        const activities = column[0].activityIDs.map(
-                                            (activityID) => {
-                                                return boards[
-                                                    boardIndex
-                                                ].activities.filter(function (
-                                                    act
-                                                ) {
-                                                    return (
+                                        let activities = column.activityIDs.map(
+                                            (activityID) =>
+                                                boards[i].activities.filter(
+                                                    (act) =>
                                                         act.id === activityID
-                                                    );
-                                                });
-                                            }
+                                                )
                                         );
 
                                         return (
                                             <Column
-                                                key={column[0].id}
-                                                column={column[0]}
+                                                key={column.id}
+                                                column={column}
                                                 activities={activities}
                                             />
                                         );
@@ -203,9 +185,7 @@ function Board({
                                 )}
 
                                 <ButtonSmall
-                                    onClick={() => {
-                                        setModalOpen('column');
-                                    }}
+                                    onClick={() => setModalOpen('column')}
                                 >
                                     <FontAwesomeIcon
                                         className='larger'
@@ -224,6 +204,7 @@ function Board({
 
 const mapStateToProps = (state) => {
     return {
+        width: state.resize.width,
         board: state.board,
         boards: state.board.boards,
         boardIndex: state.board.boardIndex,
@@ -250,8 +231,27 @@ const ContainerRight = styled.div`
     display: flex;
 `;
 
+const NavButton = styled(Button)`
+    background: #3e60ad;
+    margin-right: 1rem;
+
+    svg {
+        margin-right: 0.5rem;
+    }
+    @media ${devices.laptopSmall} {
+        padding: 10px 15px;
+
+        svg {
+            margin-right: 0;
+        }
+    }
+`;
+
 const Container = styled.div`
     display: flex;
+    overflow-y: auto;
+    padding-bottom: 1.75rem;
+    height: 100%;
 `;
 
 const SemiNav = styled.div``;

@@ -86,7 +86,6 @@ const Login = ({ history }) => {
                     Email
                 </Label>
             </FormGroup>
-
             <FormGroup>
                 <InputFieldWithLabel
                     onChange={handleChange('password')}

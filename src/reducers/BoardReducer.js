@@ -166,31 +166,23 @@ export default (state = INITIAL_STATE, action) => {
             stateCopy = { ...state };
             let currentBoard = stateCopy.boards[state.boardIndex];
             let columnID = action.columnID;
+            console.log(stateCopy);
 
             // Remove Activity from column
-            let column = currentBoard.columns.filter((column) => {
-                return column.id === columnID;
-            });
-            column = column[0];
-
+            let column = currentBoard.columns.find(
+                (column) => column.id === columnID
+            );
             let activityIDs = column.activityIDs;
 
-            activityIDs.forEach((activity) => {
-                let activityindex = activityIDs.indexOf(activity);
-                activityIDs.splice(activityindex, 1);
-            });
-
-            currentBoard.columnOrder = currentBoard.columnOrder.filter(
-                (column) => {
-                    return column !== columnID;
-                }
+            currentBoard.activities = currentBoard.activities.filter(
+                (activity) => !activityIDs.includes(activity.id)
             );
-
-            // Remove Activity from activities
-            currentBoard.columns = currentBoard.columns.filter((column) => {
-                return column.id !== columnID;
-            });
-            console.log(currentBoard);
+            currentBoard.columnOrder = currentBoard.columnOrder.filter(
+                (column) => column !== columnID
+            );
+            currentBoard.columns = currentBoard.columns.filter(
+                (column) => column.id !== columnID
+            );
 
             return {
                 ...stateCopy,
@@ -203,14 +195,11 @@ export default (state = INITIAL_STATE, action) => {
             console.log(stateCopy);
 
             let ID = action.columnID;
-            let currentBoard = stateCopy.boards[state.boardIndex];
+            let columns = stateCopy.boards[state.boardIndex].columns;
             let column = {};
 
             if (ID) {
-                let active = currentBoard.columns.filter((column) => {
-                    return column.id === ID;
-                });
-                column = active[0];
+                column = columns.find((column) => column.id === ID);
             }
 
             return {
@@ -222,14 +211,11 @@ export default (state = INITIAL_STATE, action) => {
             stateCopy = { ...state };
 
             let ID = action.activityID;
-            let currentBoard = stateCopy.boards[state.boardIndex];
+            let activities = stateCopy.boards[state.boardIndex].activities;
             let activity = {};
 
             if (ID) {
-                let active = currentBoard.activities.filter((activity) => {
-                    return activity.id === ID;
-                });
-                activity = active[0];
+                activity = activities.find((activity) => activity.id === ID);
             }
 
             return {
@@ -246,9 +232,7 @@ export default (state = INITIAL_STATE, action) => {
 
             currentBoard.activities = currentBoard.activities.map(
                 (activity) => {
-                    if (activity.id === ID) {
-                        return (activity = newActivity);
-                    }
+                    if (activity.id === ID) return (activity = newActivity);
                     return activity;
                 }
             );
@@ -264,10 +248,9 @@ export default (state = INITIAL_STATE, action) => {
             let columnID = action.columnID;
             let activity = action.newActivity;
 
-            let column = currentBoard.columns.filter((column) => {
-                return column.id === columnID;
-            });
-            column = column[0];
+            let column = currentBoard.columns.find(
+                (column) => column.id === columnID
+            );
 
             column.activityIDs.push(activity.id);
             currentBoard.activities.push(activity);
@@ -285,10 +268,9 @@ export default (state = INITIAL_STATE, action) => {
             let activityID = action.activityID;
 
             // Remove Activity from column
-            let column = currentBoard.columns.filter((column) => {
-                return column.id === columnID;
-            });
-            column = column[0];
+            let column = currentBoard.columns.find(
+                (column) => column.id === columnID
+            );
 
             let activityIDs = column.activityIDs;
             let activityindex = activityIDs.indexOf(activityID);
@@ -296,10 +278,10 @@ export default (state = INITIAL_STATE, action) => {
 
             // Remove Activity from activities
             currentBoard.activities = currentBoard.activities.filter(
-                (activity) => {
-                    return activity.id !== activityID;
-                }
+                (activity) => activity.id !== activityID
             );
+
+            console.log(currentBoard.activities);
 
             return {
                 ...stateCopy,
@@ -309,18 +291,15 @@ export default (state = INITIAL_STATE, action) => {
 
         case MOVE_ACTIVITY: {
             stateCopy = { ...state };
-            let currentBoard = stateCopy.boards[state.boardIndex];
-
             const { destination, source, draggableID } = action;
-            let fromColumn = currentBoard.columns.filter((column) => {
-                return column.id === source.droppableId;
-            });
-            fromColumn = fromColumn[0];
 
-            let toColumn = currentBoard.columns.filter((column) => {
-                return column.id === destination.droppableId;
-            });
-            toColumn = toColumn[0];
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let fromColumn = currentBoard.columns.find(
+                (column) => column.id === source.droppableId
+            );
+            let toColumn = currentBoard.columns.find(
+                (column) => column.id === destination.droppableId
+            );
 
             // If item is not dropped in same column as it was originally from
             if (fromColumn !== toColumn) {

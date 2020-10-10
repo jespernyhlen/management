@@ -75,6 +75,8 @@ const Container = styled.div`
 `;
 
 const Handle = styled.div`
+    white-space: normal;
+    width: auto;
     &:hover {
         opacity: 0.75;
     }

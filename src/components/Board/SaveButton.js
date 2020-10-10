@@ -44,7 +44,11 @@ function SaveButton({ boards, isSaved, setIsSaved }) {
     };
     return (
         <ButtonContainer style={{ marginBottom: '0' }}>
-            <Button disabled={isSaved} bgColor={'#1abf75'} onClick={saveBoard}>
+            <Button
+                disabled={isSaved}
+                bgColor={'#1abf75 !important'}
+                onClick={saveBoard}
+            >
                 {values.buttonText}
             </Button>
         </ButtonContainer>

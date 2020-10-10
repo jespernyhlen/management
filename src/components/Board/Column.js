@@ -94,8 +94,8 @@ const Container = styled.div`
     color: #222;
     border: 0;
     text-align: center;
-    width: 24.5%;
-    margin-right: 1%;
+    width: 275px;
+    margin-right: 0.5rem;
     position: relative;
     &:last-child {
         margin-right: 0;
@@ -130,6 +130,7 @@ const ActivitiesContainer = styled.div`
     transition: 0.05s all;
     border-radius: 2.5px;
     margin-bottom: 0.5rem;
+    width: inherit;
 `;
 
 const HorisontalDots = styled.div`

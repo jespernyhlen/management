@@ -50,19 +50,23 @@ body {
     }
     display: flex;
 
+    @media ${devices.tablet} {
+        flex-direction: column;
+    }
+
 }
 
 main {
-    min-height: calc(100vh - 3.5rem);
-    width: 100%;
-    margin: 2rem;
+    overflow: auto;
+    margin: 1rem;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
     /* justify-content: center; */
+    width: inherit;
 
     @media ${devices.tablet} {
-        min-height: auto;
-
+        width: auto;
     }
 }
 

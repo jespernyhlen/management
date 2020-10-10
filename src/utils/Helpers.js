@@ -6,9 +6,7 @@ export const setCookie = (key, value) => {
     });
 };
 export const removeCookie = (key) => {
-    cookie.remove(key, {
-        expires: 1,
-    });
+    cookie.remove(key);
 };
 
 export const getCookie = (key) => {
