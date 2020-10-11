@@ -8,7 +8,6 @@ function DropdownSelect({ users, selected, type, handleChange }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const toggleOpen = () => setIsOpen(!isOpen);
-    console.log(selected);
 
     useEffect(() => {
         setSelectedOptions(selected);
@@ -18,7 +17,6 @@ function DropdownSelect({ users, selected, type, handleChange }) {
         let newOptions = [...selectedOptions, value];
         setSelectedOptions(newOptions);
         handleChange(type, newOptions);
-
         setIsOpen(false);
     };
 
@@ -29,10 +27,11 @@ function DropdownSelect({ users, selected, type, handleChange }) {
         setSelectedOptions(newSelected);
         handleChange(type, newSelected);
     };
+    console.log(selectedOptions);
 
     const userList = () => {
         return users.map((user) => {
-            if (!selectedOptions.includes(user)) {
+            if (!selectedOptions.some((el) => el.email === user.email)) {
                 return (
                     <ListItem
                         onClick={onOptionClicked(user)}
@@ -103,7 +102,7 @@ const DropDownHeader = styled.ul`
     padding-top: 0.5rem;
     margin-bottom: 1rem;
     background: #fff;
-    border: 1px solid #ccc;
+    border: 1px solid #aaa;
     outline: 0;
     border-radius: 2.5px;
     box-shadow: 0 1px 20px rgba(0, 0, 0, 0.025);

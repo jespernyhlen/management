@@ -304,7 +304,7 @@ const NavList = styled.ul`
     }
 
     svg {
-        margin-right: 1rem;
+        margin-right: 1.25rem;
     }
 
     .svg-inline--fa {

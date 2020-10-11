@@ -7,7 +7,12 @@ import {
     openModal,
 } from '../../actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrashAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+    faEye,
+    faPen,
+    faTrashAlt,
+    faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 import {
     DropdownContainer,
     DropdownItem,
@@ -46,15 +51,17 @@ function BoardDropdown(props) {
         }
     };
 
-    function setModalOpen() {
+    function setModalOpen(action) {
+        if (action === 'view') content.action = action;
         let modalInfo = content;
+        console.log(content);
         openModal(true, modalInfo);
         setIsVisible(false);
         setDropdownShown(false);
     }
 
-    function deleteContent(type) {
-        switch (type) {
+    function deleteContent() {
+        switch (content.scope) {
             case 'board':
                 deleteBoard(content.boardID);
                 break;
@@ -68,11 +75,23 @@ function BoardDropdown(props) {
                 break;
         }
     }
-
     return (
         <>
             {isVisible && (
                 <DropdownContainer ref={wrapperRef}>
+                    {content.scope === 'activity' && (
+                        <DropdownItem
+                            onClick={() => {
+                                setModalOpen('view');
+                            }}
+                        >
+                            View
+                            <IconContainer>
+                                <FontAwesomeIcon icon={faEye} />
+                            </IconContainer>
+                        </DropdownItem>
+                    )}
+
                     <DropdownItem
                         onClick={() => {
                             setModalOpen();
@@ -86,7 +105,7 @@ function BoardDropdown(props) {
                     <DropdownItem
                         onClick={() => {
                             setDropdownShown(false);
-                            deleteContent(content.scope);
+                            deleteContent();
                         }}
                     >
                         Delete

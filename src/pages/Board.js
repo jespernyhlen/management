@@ -124,6 +124,7 @@ function Board(props) {
 
     function showFormModal() {
         let scope = modalInfo.scope;
+        let action = modalInfo.action;
 
         if (scope === 'board') return <BoardForm />;
         if (scope === 'column') return <ColumnForm />;

@@ -21,7 +21,7 @@ export const DropdownItem = styled.a`
     color: #1c2733;
     padding: 0.5rem 1rem;
     font-size: 12px;
-    font-weight: 500;
+    font-weight: 400;
     display: flex;
     justify-content: space-between;
     align-items: center;

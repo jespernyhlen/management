@@ -27,11 +27,14 @@ export const Form = styled.form`
         width: 100%;
         padding: 8px 12px;
         margin-bottom: 1rem;
-        border: 1px solid #ccc;
+        border: 1px solid #aaa;
         outline: 0;
         border-radius: 2.5px;
         box-shadow: 0 1px 20px rgba(0, 0, 0, 0.025);
         font-size: 0.9rem;
+        &:focus {
+            border-color: #111;
+        }
     }
 
     textarea {

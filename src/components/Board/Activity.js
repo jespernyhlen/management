@@ -101,7 +101,7 @@ const Notification = styled.p`
     background: ${(props) => (props.BgColor ? props.BgColor : '#83BB41')};
     font-size: 9px;
     width: fit-content;
-    padding: 1.5px 6px 1px;
+    padding: 1px 6px 1.75px;
     border-radius: 2px;
     color: #fff;
     font-weight: 600;
