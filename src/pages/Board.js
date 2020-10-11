@@ -10,12 +10,13 @@ import {
 } from '../utils/Helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faAngleDown } from '@fortawesome/free-solid-svg-icons';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { PageNav, PageNavTitle } from '../styles/Layout';
 import { ButtonContainer, Button, HorisontalDots } from '../styles/Buttons';
 import {
     moveActivity,
+    moveColumn,
     setBoard,
     setBoards,
     setBoardIndex,
@@ -45,6 +46,7 @@ function Board(props) {
         boards,
         setBoards,
         boardIndex,
+        moveColumn,
         moveActivity,
         openModal,
         modalOpen,
@@ -56,8 +58,12 @@ function Board(props) {
     const [boardListShown, setBoardListShown] = useState(false);
 
     const onDragEnd = (result) => {
-        const { destination, source, draggableId } = result;
-        moveActivity(destination, source, draggableId);
+        const { destination, source, draggableId, type } = result;
+        if (type === 'column') {
+            moveColumn(destination, source, draggableId);
+        } else {
+            moveActivity(destination, source, draggableId);
+        }
     };
 
     const token = getCookie('token');
@@ -127,22 +133,46 @@ function Board(props) {
     let gotBoards = boards.length > 0;
 
     const columns = () => {
-        return boards[boardIndex].columnOrder.map((columnID) => {
-            let i = boardIndex;
-            let column = boards[i].columns.find((col) => col.id === columnID);
+        return (
+            <Droppable
+                droppableId='all-columns'
+                direction='horizontal'
+                type='column'
+            >
+                {(provided) => (
+                    <Container
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                    >
+                        {boards[boardIndex].columnOrder.map(
+                            (columnID, index) => {
+                                let i = boardIndex;
+                                let column = boards[i].columns.find(
+                                    (col) => col.id === columnID
+                                );
 
-            let activities = column.activityIDs.map((activityID) =>
-                boards[i].activities.filter((act) => act.id === activityID)
-            );
+                                let activities = column.activityIDs.map(
+                                    (activityID) =>
+                                        boards[i].activities.filter(
+                                            (act) => act.id === activityID
+                                        )
+                                );
 
-            return (
-                <Column
-                    key={column.id}
-                    column={column}
-                    activities={activities}
-                />
-            );
-        });
+                                return (
+                                    <Column
+                                        key={column.id}
+                                        column={column}
+                                        activities={activities}
+                                        index={index}
+                                    />
+                                );
+                            }
+                        )}
+                        {provided.placeholder}
+                    </Container>
+                )}
+            </Droppable>
+        );
     };
 
     return (
@@ -229,6 +259,7 @@ const mapStateToProps = (state) => {
 export default withRouter(
     connect(mapStateToProps, {
         moveActivity,
+        moveColumn,
         setBoard,
         setBoards,
         setBoardIndex,
@@ -279,6 +310,7 @@ const ArrowIcon = styled(FontAwesomeIcon)`
 
 const ButtonSmall = styled.button`
     padding: 0.25rem 0.35rem;
+    margin-left: 0.5rem;
     border: 0;
     border-top: 5px solid;
     border-color: #3e60ad;

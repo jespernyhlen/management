@@ -21,6 +21,7 @@ export const SET_COLUMN = 'SET_COLUMN';
 export const ADD_COLUMN = 'ADD_COLUMN';
 export const UPDATE_COLUMN = 'UPDATE_COLUMN';
 export const DELETE_COLUMN = 'DELETE_COLUMN';
+export const MOVE_COLUMN = 'MOVE_COLUMN';
 
 /******** ACTIVITY ********/
 export const SET_ACTIVITY = 'SET_ACTIVITY';

@@ -10,6 +10,7 @@ import {
     ADD_COLUMN,
     UPDATE_COLUMN,
     DELETE_COLUMN,
+    MOVE_COLUMN,
     SET_COLUMN,
     ADD_ACTIVITY,
     UPDATE_ACTIVITY,
@@ -207,6 +208,20 @@ export default (state = INITIAL_STATE, action) => {
                 activeColumn: column,
             };
         }
+
+        case MOVE_COLUMN: {
+            stateCopy = { ...state };
+            let newColumnOrder = stateCopy.boards[state.boardIndex].columnOrder;
+            const { destination, source, draggableID } = action;
+            newColumnOrder.splice(source.index, 1);
+            newColumnOrder.splice(destination.index, 0, draggableID);
+
+            return {
+                ...stateCopy,
+                isSaved: false,
+            };
+        }
+
         case SET_ACTIVITY: {
             stateCopy = { ...state };
 

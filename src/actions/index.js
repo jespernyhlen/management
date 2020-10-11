@@ -13,6 +13,7 @@ import {
     ADD_COLUMN,
     UPDATE_COLUMN,
     DELETE_COLUMN,
+    MOVE_COLUMN,
     SET_ACTIVITY,
     ADD_ACTIVITY,
     UPDATE_ACTIVITY,
@@ -128,6 +129,26 @@ export const updateColumn = (column) => async (dispatch) => {
 
 export const deleteColumn = (columnID) => async (dispatch) => {
     dispatch({ type: DELETE_COLUMN, columnID });
+};
+
+export const moveColumn = (destination, source, draggableID) => async (
+    dispatch
+) => {
+    // If item has not been moved
+    if (!destination) return;
+
+    let isSameColumn = source.droppableId === destination.droppableId;
+    let isSameIndex = source.index === destination.index;
+
+    // If item moved to same location
+    if (isSameColumn && isSameIndex) return;
+
+    dispatch({
+        type: MOVE_COLUMN,
+        destination,
+        source,
+        draggableID,
+    });
 };
 
 /******** ACTIVITY ********/

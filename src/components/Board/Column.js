@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { openModal } from '../../actions';
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Activity from './Activity';
@@ -25,7 +25,7 @@ const ActivityList = React.memo((props) => {
     ));
 });
 
-function Column({ boardIndex, column, activities, openModal }) {
+function Column({ boardIndex, column, activities, openModal, index }) {
     const [dropdownShown, setDropdownShown] = useState(false);
 
     let modalContent = {
@@ -45,41 +45,54 @@ function Column({ boardIndex, column, activities, openModal }) {
     }
 
     return (
-        <Container>
-            <Title borderColor={column.color}>{column.title}</Title>
-            <Droppable droppableId={column.id}>
-                {(provided, snapshot) => {
-                    return (
-                        <ActivitiesContainer
-                            ref={provided.innerRef}
-                            {...provided.droppableProps}
-                            isDraggingOver={snapshot.isDraggingOver}
-                        >
-                            <HorisontalDots
-                                onClick={() => {
-                                    setDropdownShown(true);
-                                }}
-                            />
-                            <DropdownMenu
-                                dropdownShown={dropdownShown}
-                                setDropdownShown={setDropdownShown}
-                                content={modalContent}
-                            />
-                            <ActivityList
-                                activities={activities}
-                                columnID={column.id}
-                                color={column.color}
-                            />
-                            {provided.placeholder}
-                        </ActivitiesContainer>
-                    );
-                }}
-            </Droppable>
+        <Draggable draggableId={column.id} index={index}>
+            {(provided, snapshot) => (
+                <Container
+                    {...provided.draggableProps}
+                    ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
+                >
+                    <Title
+                        {...provided.dragHandleProps}
+                        borderColor={column.color}
+                    >
+                        {column.title}
+                    </Title>
+                    <Droppable droppableId={column.id} type='activity'>
+                        {(provided, snapshot) => {
+                            return (
+                                <ActivitiesContainer
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                    isDraggingOver={snapshot.isDraggingOver}
+                                >
+                                    <HorisontalDots
+                                        onClick={() => {
+                                            setDropdownShown(true);
+                                        }}
+                                    />
+                                    <DropdownMenu
+                                        dropdownShown={dropdownShown}
+                                        setDropdownShown={setDropdownShown}
+                                        content={modalContent}
+                                    />
+                                    <ActivityList
+                                        activities={activities}
+                                        columnID={column.id}
+                                        color={column.color}
+                                    />
+                                    {provided.placeholder}
+                                </ActivitiesContainer>
+                            );
+                        }}
+                    </Droppable>
 
-            <ButtonSmall onClick={setModalOpen}>
-                <FontAwesomeIcon className='larger' icon={faPlus} />
-            </ButtonSmall>
-        </Container>
+                    <ButtonSmall onClick={setModalOpen}>
+                        <FontAwesomeIcon className='larger' icon={faPlus} />
+                    </ButtonSmall>
+                </Container>
+            )}
+        </Draggable>
     );
 }
 
@@ -93,7 +106,10 @@ export default connect(mapStateToProps, { openModal })(Column);
 
 const Container = styled.div`
     color: #222;
+    height: fit-content;
     border: 0;
+    background-color: ${(props) =>
+        props.isDragging ? '#f5fbff' : 'transparent'};
     text-align: center;
     width: 275px;
     margin-right: 0.5rem;
