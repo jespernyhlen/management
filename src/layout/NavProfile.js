@@ -1,23 +1,18 @@
 import React from 'react';
-import Gravatar from 'react-gravatar';
+import GravatarImage from './Gravatar';
 import styled from 'styled-components';
+import { devices } from '../styles/Devices';
 
 const NavProfile = ({ user }) => {
     return (
         <Container>
             <ProfileImage>
-                <Gravatar
-                    email={user.email}
-                    size={50}
-                    style={{
-                        margin: '0 auto',
-                        borderRadius: '50%',
-                    }}
-                />
+                <GravatarImage email={user.email} size={40} />
             </ProfileImage>
-            <ProfileName>{user.name}</ProfileName>
-            <ProfileEmail>{user.email}</ProfileEmail>
-            <ProfileRole>{user.role}</ProfileRole>
+            <ProfileInfo>
+                <ProfileName>{user.name}</ProfileName>
+                <ProfileEmail>{user.email}</ProfileEmail>
+            </ProfileInfo>
         </Container>
     );
 };
@@ -25,11 +20,23 @@ const NavProfile = ({ user }) => {
 export default NavProfile;
 
 const Container = styled.div`
-    text-align: center;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 3rem;
-    margin-top: 2rem;
+    display: flex;
+    border-bottom: 1px solid #281f3a;
+    padding-bottom: 1rem;
     margin-bottom: 1rem;
+    margin-top: 1.5rem;
+
+    @media ${devices.tablet} {
+        margin-top: 0.5rem;
+    }
+`;
+
+const ProfileInfo = styled.div`
+    text-align: left;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 `;
 
 const ProfileImage = styled.div`
@@ -40,12 +47,13 @@ const ProfileImage = styled.div`
 const ProfileName = styled.p`
     font-weight: 600;
     margin-bottom: 0.5rem;
+    color: #eee;
 `;
 
 const ProfileEmail = styled.p`
-    font-size: 0.8rem;
+    font-size: 0.6rem;
     margin-bottom: 0.25rem;
-    color: #666;
+    color: #eee;
 `;
 const ProfileRole = styled(ProfileEmail)`
     text-transform: capitalize;

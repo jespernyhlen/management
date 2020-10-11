@@ -4,7 +4,6 @@ export const DropdownContainer = styled.div`
     display: flex;
     flex-direction: column;
     background: #fff;
-    box-shadow: 0 7.5px 20px rgba(0, 0, 0, 0.1);
     position: absolute;
     z-index: 11;
     top: 1.5rem;
@@ -12,13 +11,14 @@ export const DropdownContainer = styled.div`
     width: calc(100% + 2.5px);
     max-width: 150px;
     height: auto;
-    border-radius: 2.5px;
-    border: 1px solid #eee;
     padding: 0.25rem 0;
+    border-radius: 5px;
+    border: 1px solid #e2e6e9;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
 `;
 
 export const DropdownItem = styled.a`
-    color: #222;
+    color: #1c2733;
     padding: 0.5rem 1rem;
     font-size: 12px;
     font-weight: 500;
@@ -28,8 +28,8 @@ export const DropdownItem = styled.a`
     transition: 0.05s all;
 
     &:hover {
-        background: #3f5fad;
-        color: #ececec;
+        background: #331d5f12;
+        color: #1c2733;
         text-decoration: none;
         cursor: pointer;
     }

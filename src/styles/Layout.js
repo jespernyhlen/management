@@ -6,10 +6,9 @@ export const PageNav = styled.div`
     justify-content: space-between;
     position: relative;
     align-items: center;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
     background: #fefefe;
     padding: 1rem 2.5rem 1rem 1.5rem;
-    border-radius: 5px;
     height: 4.25rem;
 
     @media ${devices.tabletSmall} {
@@ -22,7 +21,7 @@ export const PageNav = styled.div`
 
 export const PageNavTitle = styled.h3`
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 500;
 
     @media ${devices.tabletSmall} {
         margin-bottom: 1rem;

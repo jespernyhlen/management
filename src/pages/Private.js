@@ -8,7 +8,6 @@ import {
 } from '../utils/Helpers';
 import Notification from '../components/Notification';
 import Gravatar from 'react-gravatar';
-import styled from 'styled-components';
 
 import {
     FormHeader,
@@ -150,7 +149,9 @@ const Private = ({ history }) => {
     return (
         <>
             <PageNav>
-                <PageNavTitle>User Settings</PageNavTitle>
+                <PageNavTitle>
+                    <b>User Settings</b>
+                </PageNavTitle>
             </PageNav>
             <FormContainer>
                 <FormContent>

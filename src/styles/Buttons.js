@@ -34,6 +34,24 @@ export const Button = styled.button`
     }
 `;
 
+export const HorisontalDots = styled.div`
+    width: 13.5px;
+    height: 13.5px;
+    background-image: radial-gradient(circle, #000 1.5px, #13131300 0.5px);
+    background-size: 100% 33.33%;
+    transform: rotate(90deg);
+    position: absolute;
+    right: ${(props) => (props.right ? props.right : '7.5px')};
+    top: ${(props) => (props.top ? props.top : '5px')};
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.1s all;
+
+    &:hover {
+        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
+    }
+`;
+
 // const Button = styled.button`
 //     font-size: 0.9rem;
 //     cursor: pointer;

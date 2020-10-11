@@ -58,6 +58,7 @@ const Login = ({ history }) => {
                         password: '',
                         buttonText: 'SIGNED IN',
                     });
+
                     isAuthenticated() && getAuthenticatedUser().role === 'admin'
                         ? history.push('/admin')
                         : history.push('/private');

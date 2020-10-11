@@ -224,24 +224,6 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
 
-        case UPDATE_ACTIVITY: {
-            stateCopy = { ...state };
-            let currentBoard = stateCopy.boards[state.boardIndex];
-            let ID = action.activity.id;
-            let newActivity = action.activity;
-
-            currentBoard.activities = currentBoard.activities.map(
-                (activity) => {
-                    if (activity.id === ID) return (activity = newActivity);
-                    return activity;
-                }
-            );
-
-            return {
-                ...stateCopy,
-                isSaved: false,
-            };
-        }
         case ADD_ACTIVITY: {
             stateCopy = { ...state };
             let currentBoard = stateCopy.boards[state.boardIndex];
@@ -254,6 +236,25 @@ export default (state = INITIAL_STATE, action) => {
 
             column.activityIDs.push(activity.id);
             currentBoard.activities.push(activity);
+
+            return {
+                ...stateCopy,
+                isSaved: false,
+            };
+        }
+
+        case UPDATE_ACTIVITY: {
+            stateCopy = { ...state };
+            let currentBoard = stateCopy.boards[state.boardIndex];
+            let ID = action.activity.id;
+            let newActivity = action.activity;
+
+            currentBoard.activities = currentBoard.activities.map(
+                (activity) => {
+                    if (activity.id === ID) return (activity = newActivity);
+                    return activity;
+                }
+            );
 
             return {
                 ...stateCopy,

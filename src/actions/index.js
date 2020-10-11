@@ -18,6 +18,7 @@ import {
     UPDATE_ACTIVITY,
     DELETE_ACTIVITY,
     MOVE_ACTIVITY,
+    SET_USERS,
 } from './types';
 
 /******** COMMON ********/
@@ -165,4 +166,10 @@ export const moveActivity = (destination, source, draggableID) => async (
         source,
         draggableID,
     });
+};
+
+/******** USERS ********/
+
+export const setUsers = (users) => async (dispatch) => {
+    dispatch({ type: SET_USERS, users });
 };

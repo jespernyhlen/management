@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import Activity from './Activity';
 import DropdownMenu from './DropdownMenu';
+import { HorisontalDots } from '../../styles/Buttons';
 
 // To optimize, and prevent multiple React renders, React.memo() is used.
 // Similar to usage of shouldComponentUpdate()
@@ -131,24 +132,6 @@ const ActivitiesContainer = styled.div`
     border-radius: 2.5px;
     margin-bottom: 0.5rem;
     width: inherit;
-`;
-
-const HorisontalDots = styled.div`
-    width: 13.5px;
-    height: 13.5px;
-    background-image: radial-gradient(circle, #666 1px, #13131300 1.5px);
-    background-size: 100% 33.33%;
-    transform: rotate(90deg);
-    position: absolute;
-    right: 9.5px;
-    top: 8px;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.1s all;
-
-    &:hover {
-        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
-    }
 `;
 
 const ButtonSmall = styled.button`

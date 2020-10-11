@@ -28,3 +28,6 @@ export const ADD_ACTIVITY = 'ADD_ACTIVITY';
 export const UPDATE_ACTIVITY = 'UPDATE_ACTIVITY';
 export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
 export const MOVE_ACTIVITY = 'MOVE_ACTIVITY';
+
+/******** USERS ********/
+export const SET_USERS = 'SET_USERS';

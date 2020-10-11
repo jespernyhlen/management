@@ -125,7 +125,7 @@ const Nav = ({ history, setIsInitialized }) => {
 
     return (
         <>
-            <Navbar className={!navOpen && 'nav-mobile'}>
+            <Navbar className={!navOpen && 'nav-closed'}>
                 <MenuButtonContainer>
                     <MenuButton
                         className={navOpen ? 'menu-btn open' : 'menu-btn'}
@@ -160,7 +160,7 @@ export default withRouter(
 
 const MenuButtonContainer = styled.div`
     position: absolute;
-    left: 8px;
+    left: 3.75px;
     top: 5px;
     @media ${devices.tablet} {
         position: inherit;
@@ -201,7 +201,7 @@ const MenuIcon = styled.label`
     user-select: none;
     margin: 10px 2.75px;
     .navicon {
-        background: #333;
+        background: #fff;
         display: block;
         height: 2px;
         position: relative;
@@ -211,7 +211,7 @@ const MenuIcon = styled.label`
 
     .navicon:before,
     .navicon:after {
-        background: #333;
+        background: #fff;
         content: '';
         display: block;
         height: 100%;
@@ -236,18 +236,22 @@ const MenuIcon = styled.label`
 `;
 
 const Navbar = styled.nav`
-    background: #fefefe;
+    background: #211931;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     padding: 1.5rem;
     min-width: 220px;
+    padding-top: 3.5rem;
 
-    &.nav-mobile {
+    &.nav-closed {
         padding: 0;
 
         min-width: auto;
         @media ${devices.tablet} {
             padding: 1.5rem;
         }
+    }
+    @media ${devices.tablet} {
+        padding: 1.5rem;
     }
 `;
 
@@ -269,7 +273,7 @@ const NavList = styled.ul`
     span.nav-link {
         outline: none;
         border: none;
-        color: #888;
+        color: #dedede;
         font-size: 0.9rem;
         font-weight: 600;
         letter-spacing: 0.5px;
@@ -277,25 +281,30 @@ const NavList = styled.ul`
         height: 40px;
         align-items: end;
         display: flex;
-        padding: 12.5px 15.5px 30px;
+        padding: 12.5px 12.5px 30px;
         -webkit-transition: 0.2s;
-        transition: 0.2s;
-        border-left: 4px solid;
+        border-left: 3px solid transparent;
+        border-right: 3px solid transparent;
+        letter-spacing: 1px;
+        font-weight: 400;
+        margin-left: -3px;
+        transition: 0.1s;
     }
     a.nav-link:hover,
     span.nav-link:hover {
         color: #222;
+        color: #ffffff;
+        background: #2f2346;
         outline: none;
     }
 
     a.nav-link.active {
         color: #fff;
-        color: #3e60ad;
-        border-left: 4px solid #3e60ad;
+        border-left: 3px solid #fff;
     }
 
     svg {
-        margin-right: 1.5rem;
+        margin-right: 1rem;
     }
 
     .svg-inline--fa {

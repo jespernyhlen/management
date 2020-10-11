@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-
 import styled from 'styled-components';
+import GravatarImage from '../../layout/Gravatar';
 import { Draggable } from 'react-beautiful-dnd';
 import DropdownMenu from './DropdownMenu';
+import { HorisontalDots } from '../../styles/Buttons';
 
 function Activity({ boardIndex, activity, columnID, index, color }) {
-    const { id, title, content, date, notification } = activity;
+    const { id, title, content, date, notification, members } = activity;
 
     const [dropdownShown, setDropdownShown] = useState(false);
 
@@ -45,7 +46,21 @@ function Activity({ boardIndex, activity, columnID, index, color }) {
                         <Handle {...provided.dragHandleProps}>
                             {title && <Title>{title}</Title>}
                             {content && <Text>{content}</Text>}
-                            {date && <Date>{date}</Date>}
+                            <BottomContainer>
+                                {date && <Date>{date}</Date>}
+                                <MembersContainer>
+                                    {members.map((member) => {
+                                        return (
+                                            <GravatarImage
+                                                key={member.email}
+                                                email={member.email}
+                                                size={20}
+                                                rounded={true}
+                                            />
+                                        );
+                                    })}
+                                </MembersContainer>
+                            </BottomContainer>
                         </Handle>
                     </Container>
                 );
@@ -66,12 +81,11 @@ const Container = styled.div`
     position: relative;
     text-align: left;
     background-color: ${(props) => (props.isDragging ? '#f5fbff' : 'white')};
-    border: 2px solid transparent;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
     border-radius: 2.5px;
     color: #282c34;
     margin-top: 0.5rem;
-    padding: 0.5rem 0.5rem 0;
+    padding: 0.75rem 0.5rem 0.125rem;
 `;
 
 const Handle = styled.div`
@@ -94,24 +108,6 @@ const Notification = styled.p`
     margin-bottom: 0.75rem;
 `;
 
-const HorisontalDots = styled.div`
-    width: 13.5px;
-    height: 13.5px;
-    background-image: radial-gradient(circle, #666 1px, #13131300 1.5px);
-    background-size: 100% 33.33%;
-    transform: rotate(90deg);
-    position: absolute;
-    right: 7.5px;
-    top: 2.5px;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.1s all;
-
-    &:hover {
-        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
-    }
-`;
-
 const Title = styled.h4`
     font-size: 12px;
     margin-bottom: 0.5rem;
@@ -129,4 +125,25 @@ const Date = styled.p`
     font-weight: 400;
     color: #666;
     margin-bottom: 0.5rem;
+`;
+
+const BottomContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.5rem;
+
+    p {
+        margin-bottom: 0;
+    }
+`;
+
+const MembersContainer = styled.div`
+    img {
+        margin-right: 0 !important;
+        position: relative;
+        margin-left: -10px !important;
+        z-index: 1;
+        border: 1px solid #fff;
+    }
 `;

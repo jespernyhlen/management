@@ -9,8 +9,16 @@ import {
 } from '../../actions';
 import Modal from 'react-modal';
 import styled from 'styled-components';
+import {
+    Container,
+    Header,
+    Title,
+    Form,
+    ButtonTop,
+} from '../../styles/FormBoardStyles';
 import ColorInput from './ColorInput';
 import FieldInput from './FieldInput';
+import DropdownSelect from '../Board/DropdownSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { ButtonContainer, Button } from '../../styles/Buttons';
@@ -32,6 +40,7 @@ const newItemTemplate = {
             content: '',
         },
     ],
+    members: [],
 };
 
 function ActivityForm({
@@ -42,6 +51,7 @@ function ActivityForm({
     modalInfo,
     setActivity,
     activeActivity,
+    users,
 }) {
     const [newItem, setNewItem] = useState(newItemTemplate);
     const isUpdate = modalInfo.action === 'edit';
@@ -64,6 +74,7 @@ function ActivityForm({
                         content: activeActivity.notification[0].content,
                     },
                 ],
+                members: activeActivity.members,
             });
         }
     }, [activeActivity]);
@@ -81,6 +92,10 @@ function ActivityForm({
         }
     };
 
+    const handleDropdown = (name, value) => {
+        setNewItem({ ...newItem, [name]: value });
+    };
+
     function saveItem() {
         newItem.id = uniqueID();
         addActivity(newItem, modalInfo.columnID);
@@ -88,6 +103,8 @@ function ActivityForm({
     }
 
     function updateItem() {
+        console.log(newItem);
+
         updateActivity(newItem);
         setCloseModal();
     }
@@ -188,6 +205,13 @@ function ActivityForm({
                                 );
                             })}
                         </div>
+                        <label htmlFor='members'>Members</label>
+                        <DropdownSelect
+                            users={users}
+                            selected={newItem.members}
+                            type={'members'}
+                            handleChange={handleDropdown}
+                        />
                     </Form>
                     <ButtonContainer>
                         <Button
@@ -209,6 +233,7 @@ const mapStateToProps = (state) => {
         modalOpen: state.modal.modalOpen,
         modalInfo: state.modal.info,
         activeActivity: state.board.activeActivity,
+        users: state.users.users,
     };
 };
 
@@ -219,60 +244,3 @@ export default connect(mapStateToProps, {
     setActivity,
     setIsSaved,
 })(ActivityForm);
-
-const Container = styled.div`
-    position: relative;
-`;
-
-const Header = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin: 4px 0 30px;
-`;
-
-const Title = styled.h2`
-    color: #151515;
-    font-weight: 700;
-    text-transform: capitalize;
-    font-size: 1.2rem;
-`;
-
-const Form = styled.form`
-    border-radius: 5px;
-
-    input,
-    textarea {
-        height: auto;
-        width: 100%;
-        padding: 8px 12px;
-        margin-bottom: 1rem;
-        border: 1px solid #ccc;
-        outline: 0;
-        border-radius: 2.5px;
-        box-shadow: 0 1px 20px rgba(0, 0, 0, 0.025);
-        font-size: 0.9rem;
-    }
-
-    textarea {
-    }
-
-    label {
-        font-weight: 600;
-        color: #151515;
-    }
-`;
-
-const ButtonTop = styled.button`
-    padding: 0.25rem 0.5rem;
-    background: transparent;
-    border: 0;
-    cursor: pointer;
-
-    path {
-        fill: #666;
-    }
-
-    &:hover {
-        background: #e8e8e8;
-    }
-`;

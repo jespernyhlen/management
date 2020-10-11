@@ -13,15 +13,15 @@ import { faPlus, faAngleDown } from '@fortawesome/free-solid-svg-icons';
 import { DragDropContext } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { PageNav, PageNavTitle } from '../styles/Layout';
-import { ButtonContainer, Button } from '../styles/Buttons';
+import { ButtonContainer, Button, HorisontalDots } from '../styles/Buttons';
 import {
     moveActivity,
     setBoard,
     setBoards,
     setBoardIndex,
-    setIsInitialized,
     setIsSaved,
     openModal,
+    setUsers,
 } from '../actions';
 
 import BoardForm from '../components/Form/BoardForm';
@@ -46,15 +46,12 @@ function Board(props) {
         setBoards,
         boardIndex,
         moveActivity,
-        isInitialized,
-        setIsInitialized,
         openModal,
         modalOpen,
         modalInfo,
+        setUsers,
     } = props;
-
-    console.log(width);
-
+    const [isInitialized, setIsInitialized] = useState(false);
     const [dropdownShown, setDropdownShown] = useState(false);
     const [boardListShown, setBoardListShown] = useState(false);
 
@@ -64,24 +61,44 @@ function Board(props) {
     };
 
     const token = getCookie('token');
-    /* Rewrite the "useViewport" hook to pull the width and height values
-   out of the context instead of calculating them itself */
+
+    const getBoardData = axios({
+        method: 'GET',
+        url: `${API_URL}/board/${getAuthenticatedUser()._id}`,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+
+    const getUsers = axios({
+        method: 'GET',
+        url: `${API_URL}/users`,
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
 
     useEffect(() => {
         if (!isInitialized) {
-            axios({
-                method: 'GET',
-                url: `${API_URL}/board/${getAuthenticatedUser()._id}`,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            })
-                .then((response) => {
-                    setBoards(response.data);
-                    setIsInitialized(true);
-                })
-                .catch((error) => {
-                    if (error.response.status !== 200) {
+            axios
+                .all([getBoardData, getUsers])
+                .then(
+                    axios.spread((...responses) => {
+                        const boardData = responses[0].data;
+                        const usersData = responses[1].data;
+                        setIsInitialized(true);
+                        setBoards(boardData);
+                        setUsers(usersData);
+                    })
+                )
+                .catch((errors) => {
+                    const errorOne = errors[0];
+                    const errorTwo = errors[1];
+                    // react on errors.
+                    if (
+                        errorOne.response.status !== 200 ||
+                        errorTwo.response.status !== 200
+                    ) {
                         removeAuthenticatedUser(() => {
                             history.push('/');
                         });
@@ -109,12 +126,31 @@ function Board(props) {
 
     let gotBoards = boards.length > 0;
 
+    const columns = () => {
+        return boards[boardIndex].columnOrder.map((columnID) => {
+            let i = boardIndex;
+            let column = boards[i].columns.find((col) => col.id === columnID);
+
+            let activities = column.activityIDs.map((activityID) =>
+                boards[i].activities.filter((act) => act.id === activityID)
+            );
+
+            return (
+                <Column
+                    key={column.id}
+                    column={column}
+                    activities={activities}
+                />
+            );
+        });
+    };
+
     return (
         isInitialized && (
             <>
                 <PageNav>
                     <PageNavTitle>
-                        Activity Board
+                        <b>Activity Board</b>
                         {gotBoards ? ' - ' + boards[boardIndex].title : null}
                     </PageNavTitle>
                     <HorisontalDots onClick={() => setDropdownShown(true)} />
@@ -159,31 +195,7 @@ function Board(props) {
                         </SemiNav>
                         <DragDropContext onDragEnd={(e) => onDragEnd(e)}>
                             <Container>
-                                {boards[boardIndex].columnOrder.map(
-                                    (columnID) => {
-                                        let i = boardIndex;
-                                        let column = boards[i].columns.find(
-                                            (col) => col.id === columnID
-                                        );
-
-                                        let activities = column.activityIDs.map(
-                                            (activityID) =>
-                                                boards[i].activities.filter(
-                                                    (act) =>
-                                                        act.id === activityID
-                                                )
-                                        );
-
-                                        return (
-                                            <Column
-                                                key={column.id}
-                                                column={column}
-                                                activities={activities}
-                                            />
-                                        );
-                                    }
-                                )}
-
+                                {columns()}
                                 <ButtonSmall
                                     onClick={() => setModalOpen('column')}
                                 >
@@ -210,7 +222,6 @@ const mapStateToProps = (state) => {
         boardIndex: state.board.boardIndex,
         modalOpen: state.modal.modalOpen,
         modalInfo: state.modal.info,
-        isInitialized: state.board.isInitialized,
         isSaved: state.board.isSaved,
     };
 };
@@ -221,9 +232,9 @@ export default withRouter(
         setBoard,
         setBoards,
         setBoardIndex,
-        setIsInitialized,
         setIsSaved,
         openModal,
+        setUsers,
     })(Board)
 );
 
@@ -264,24 +275,6 @@ const ArrowIcon = styled(FontAwesomeIcon)`
     margin-right: 2.5px;
     margin-bottom: -1px;
     font-size: 1rem;
-`;
-
-const HorisontalDots = styled.div`
-    width: 13.5px;
-    height: 13.5px;
-    background-image: radial-gradient(circle, #666 1px, #13131300 1.5px);
-    background-size: 100% 33.33%;
-    transform: rotate(90deg);
-    position: absolute;
-    right: 9.5px;
-    top: 8px;
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.1s all;
-
-    &:hover {
-        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
-    }
 `;
 
 const ButtonSmall = styled.button`

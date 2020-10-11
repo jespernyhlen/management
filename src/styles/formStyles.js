@@ -169,8 +169,7 @@ export const FormHeader = styled.div`
 
 export const FormHeaderText = styled.h1`
     margin: 4px 0 30px;
-    color: #2c3a5a;
-    font-weight: 600;
+    color: #222;
 
     @media ${devices.mobile} {
         font-size: 2rem;

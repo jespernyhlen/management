@@ -29,8 +29,9 @@ html {
 
 
 body {
-    font-family: "Lato", sans-serif;
-    letter-spacing: 0.5px;
+    /* font-family: "Lato", sans-serif;
+    font-family: 'Source Sans Pro', sans-serif; */
+    letter-spacing: 0.25px;
     /* box-sizing: border-box; */
     /* letter-spacing: 0.5px; */
     background: linear-gradient(45deg, #e3e3ea, #fcfcff);
@@ -58,7 +59,7 @@ body {
 
 main {
     overflow: auto;
-    margin: 1rem;
+    margin: 0.5rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;

@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import styled from 'styled-components';
 import GlobalStyles from './styles/GlobalStyles';
 import { setWidth } from './actions';
 
@@ -16,7 +15,6 @@ function App({ setWidth }) {
     };
 
     useEffect(() => {
-        console.log(window.innerWidth);
         window.addEventListener('resize', handleWindowResize);
         return () => window.removeEventListener('resize', handleWindowResize);
     }, []);

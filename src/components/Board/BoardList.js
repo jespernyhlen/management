@@ -85,7 +85,7 @@ const ListContainer = styled.div`
     width: fit-content;
     height: auto;
     padding: 0.75rem;
-    margin-top: -1.975rem;
+    margin-top: -0.333rem;
 `;
 
 const ListItem = styled.a`
