@@ -19,9 +19,9 @@ export const Title = styled.h2`
 `;
 
 export const Form = styled.form`
-    border-radius: 5px;
+    /* border-radius: 5px; */
 
-    input,
+    /* input,
     textarea {
         height: 2.5rem;
         width: 100%;
@@ -39,12 +39,7 @@ export const Form = styled.form`
 
     textarea {
         height: auto;
-    }
-
-    label {
-        font-weight: 600;
-        color: #151515;
-    }
+    } */
 `;
 
 export const ButtonTop = styled.button`

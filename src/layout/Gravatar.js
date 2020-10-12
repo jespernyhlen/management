@@ -1,7 +1,7 @@
 import React from 'react';
 import Gravatar from 'react-gravatar';
 
-const GravatarImage = ({ email, size, rounded }) => {
+const GravatarImage = ({ email, size, rounded, right }) => {
     return (
         <Gravatar
             email={email}
@@ -9,7 +9,7 @@ const GravatarImage = ({ email, size, rounded }) => {
             style={{
                 margin: '0 auto',
                 borderRadius: rounded ? '50%' : '2.5px',
-                marginRight: '1rem',
+                marginRight: right ? right : '1rem',
             }}
         />
     );

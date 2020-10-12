@@ -151,6 +151,7 @@ const Private = ({ history }) => {
             <PageNav>
                 <PageNavTitle>
                     <b>User Settings</b>
+                    {values && ' - ' + values.name}
                 </PageNavTitle>
             </PageNav>
             <FormContainer>

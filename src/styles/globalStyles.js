@@ -44,7 +44,8 @@ body {
 #root {
     width: 100%;
     word-break: break-word;
-    background: linear-gradient(225deg,#F6F7FA,#ECEDF5);
+    background: linear-gradient(225deg,#F6F7FA,#f6f6f9);
+    
     &.navigation-open {
         max-height: 100vh;
         overflow-y: hidden;
@@ -59,7 +60,6 @@ body {
 
 main {
     overflow: auto;
-    margin: 0.5rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;

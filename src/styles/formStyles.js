@@ -129,9 +129,9 @@ export const TextContent = styled.p`
 // Style for container with Form and content
 export const FormContainer = styled.div`
     width: 100%;
-    max-width: 400px;
+    height: 100%;
     background: #fff;
-    border-radius: 5px;
+    border-radius: 2.5px;
     box-shadow: 0 5px 50px rgba(0, 0, 0, 0.05);
 
     @media ${devices.tablet} {
@@ -141,6 +141,7 @@ export const FormContainer = styled.div`
 
 export const FormContent = styled.div`
     padding: 30px;
+    max-width: 450px;
     margin: 0 auto;
     height: 100%;
     justify-content: center;
@@ -186,11 +187,11 @@ export const FormGroup = styled.div`
         padding-top: 0;
         padding-bottom: 0;
         color: #777;
-        font-size: 0.7rem;
+        font-size: 0.8rem;
     }
 
     input:-webkit-autofill ~ label {
-        font-size: 0.7rem;
+        font-size: 0.8rem;
         padding-top: 0;
         padding-bottom: 0;
         color: #777;
@@ -199,13 +200,13 @@ export const FormGroup = styled.div`
 
 export const Label = styled.label`
     position: absolute;
-    top: 5px;
+    top: 0;
+    font-size: 0.8rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
     transition: 0.2s;
     color: #aaa;
-    font-size: 0.8rem;
-    font-weight: 700;
 
     @media ${devices.mobile} {
         font-size: 0.7rem;
@@ -220,18 +221,22 @@ export const Label = styled.label`
 
 export const InputFieldWithLabel = styled.input`
     ${baseInputStyles}
-    border-bottom: 2px solid #bbb;
-    color: #000;
+    height: 2.5rem;
+    width: 100%;
+    padding: 8px 12px;
+    margin-bottom: 1rem;
+    outline: 0;
+    border-radius: 2.5px;
     font-size: 0.9rem;
-    background: transparent;
-    letter-spacing: 1px;
+    background: #f7f7f7;
+    border: 1px solid gainsboro;
     transition: all 0.2s;
 
     &:-internal-autofill-selected {
         font-family: 'Lato', sans-serif;
-        background-color: transparent !important;
-        box-shadow: 0 0 0 50px white inset;
-        -webkit-box-shadow: 0 0 0 50px white inset;
+        background-color: #f7f7f7 !important;
+        box-shadow: 0 0 0 50px #f7f7f7 inset;
+        -webkit-box-shadow: 0 0 0 50px #f7f7f7 inset;
     }
     &:-webkit-autofill::first-line {
         font-family: 'Lato', sans-serif;
@@ -243,7 +248,8 @@ export const InputFieldWithLabel = styled.input`
 
     &:placeholder-shown ~ ${Label} {
         cursor: text;
-        top: 25px;
+        top: 30px;
+        left: 10px;
         display: flex;
         align-items: center;
         pointer-events: none;
@@ -252,15 +258,24 @@ export const InputFieldWithLabel = styled.input`
     &:focus {
         ~ ${Label} {
             position: absolute;
-            top: 5px;
             transition: 0.2s;
             color: #2c3a5a;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
+            left: 0;
+            top: 0;
         }
-        border-bottom: 2px solid #2c3a5a;
+        border: 1px solid #2c3a5a;
+        background: #fff;
     }
+
+    &:hover {
+        background: #fff;
+    }
+
     &.read-only {
-        border-bottom: 0;
+        border: 0;
+        background: #ffffff;
+        padding-left: 0;
         cursor: initial;
     }
 `;

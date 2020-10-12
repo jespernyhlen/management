@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {
-    getCookie,
-    removeAuthenticatedUser,
-    // updateUser,
-} from '../utils/Helpers';
+import { getCookie, removeAuthenticatedUser } from '../utils/Helpers';
 import Notification from '../components/Notification';
-import Nav from '../layout/Navbar';
 import Gravatar from 'react-gravatar';
 import styled, { css } from 'styled-components';
+import { PageNav, PageNavTitle } from '../styles/Layout';
 
-import { devices } from '../styles/devices';
+import { devices } from '../styles/Devices';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
         ? 'http://localhost:8888/api'
         : process.env.REACT_APP_API;
 
-const Private = ({ history }) => {
+const Users = ({ history }) => {
     const [values, setValues] = useState({
         users: [],
         buttonText: 'Update',
@@ -47,180 +43,197 @@ const Private = ({ history }) => {
             });
     }, []);
 
-    const { users, buttonText } = values;
+    const { users } = values;
 
-    const handleChange = (name) => (event) => {
-        setValues({ ...values, [name]: event.target.value });
+    let headers = ['Avatar', 'email', 'name', 'role', 'created'];
+
+    let getHeaders = () => {
+        var columns = headers.map((head) => {
+            return <TableHeader>{head}</TableHeader>;
+        });
+        return <TableRow>{columns}</TableRow>;
     };
 
-    const clickSubmit = (event) => {
-        // event.preventDefault();
-        // setValues({ ...values, buttonText: 'Updating' });
-        // axios({
-        //     method: 'PUT',
-        //     url: `${API_URL}/user/update`,
-        //     headers: {
-        //         Authorization: `Bearer ${token}`,
-        //     },
-        //     data: { name, password },
-        // })
-        //     .then((response) => {
-        //         updateUser(response, () => {
-        //             setValues({
-        //                 ...values,
-        //                 password: '',
-        //                 buttonText: 'Update',
-        //             });
-        //             Notification('Profile updated successfully', 'success');
-        //         });
-        //     })
-        //     .catch((error) => {
-        //         setValues({ ...values, buttonText: 'Update' });
-        //         Notification(error.response.data.error, 'danger');
-        //     });
+    let getRows = () => {
+        return Object.keys(users).map((key, index) => {
+            console.log(users[key]);
+            return (
+                <TableRow key={key}>
+                    <TableData>
+                        <Gravatar
+                            email={users[key].email}
+                            size={40}
+                            style={{
+                                margin: '',
+                                borderRadius: '5px',
+                            }}
+                        />
+                    </TableData>
+
+                    <TableData data-label='email'>{users[key].email}</TableData>
+                    <TableData data-label='name'>{users[key].name}</TableData>
+                    <TableData data-label='role'>{users[key].role}</TableData>
+                    <TableData data-label='created'>
+                        {new Date(users[key].created).toLocaleDateString()}
+                    </TableData>
+                </TableRow>
+            );
+        });
     };
 
-    const userContent = () => (
-        <>
-            {Object.keys(users).map((key, index) => (
-                <UserContent key={key}>
-                    <Gravatar
-                        email={users[key].email}
-                        size={40}
-                        style={{
-                            margin: '0 0 2rem',
-                            margin: '0px 1.5rem 1rem 0',
-                            borderRadius: '5px',
-                        }}
-                    />
-
-                    <Column>
-                        <ColumnType>Email</ColumnType>
-                        <p>
-                            {users[key].email} {index * 100 + 1000}
-                        </p>
-                    </Column>
-                    <Column>
-                        <ColumnType>Name</ColumnType>
-                        <p>{users[key].name}</p>
-                    </Column>
-                    <Column>
-                        <ColumnType>Role</ColumnType>
-                        <p>{users[key].role}</p>
-                    </Column>
-                    <Column>
-                        <ColumnType>Created</ColumnType>
-                        <p>
-                            {new Date(users[key].created).toLocaleDateString()}
-                        </p>
-                    </Column>
-                </UserContent>
-            ))}
-        </>
-    );
-
-    const usersContent = () => (
-        <UsersContainer>
-            <Nav />
-            <UsersContent>
-                <UsersHeader>
-                    <UsersHeaderText>Users</UsersHeaderText>
-                </UsersHeader>
-                {userContent()}
-            </UsersContent>
-        </UsersContainer>
-    );
+    let userTable = () => {
+        return (
+            <Table className='responsive-table'>
+                <Thead>{getHeaders()}</Thead>
+                <Tbody>{getRows()}</Tbody>
+            </Table>
+        );
+    };
 
     return (
-        <main>
-            <Container>{usersContent()}</Container>
-        </main>
+        <>
+            <PageNav>
+                <PageNavTitle>
+                    <b>Members</b> - Information
+                </PageNavTitle>
+            </PageNav>
+            <UsersContainer>
+                <UsersHeader>
+                    <UsersHeaderText>
+                        {values.users && values.users.length + ' Members found'}
+                    </UsersHeaderText>
+                </UsersHeader>
+                <TableContainer> {userTable()}</TableContainer>
+            </UsersContainer>
+        </>
     );
 };
 
-export default Private;
+export default Users;
 
-export const Container = styled.div`
-    margin: 0 auto;
-    display: flex;
-    width: fit-content;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-
-    max-width: 1260px;
-    flex-direction: ${(props) =>
-        props.direction === 'reverse' ? 'row' : 'row-reverse'};
-
-    @media ${devices.tablet} {
-        flex-direction: column;
-        box-shadow: none;
-    }
-`;
-
-export const UsersContainer = styled.div`
+const UsersContainer = styled.div`
     width: 100%;
-    background: #fff;
-`;
-
-export const UsersContent = styled.div`
-    padding: 150px 80px;
-    margin: 0 auto;
     height: 100%;
-    justify-content: center;
-    display: flex;
-    flex-direction: column;
-    form {
-        div {
-            position: relative;
-        }
-    }
-
+    padding: 2rem;
     @media ${devices.mobile} {
-        padding: 40px 20px;
+        padding: 1rem;
     }
 `;
 
-export const UsersHeader = styled.div`
+const UsersHeader = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
 `;
 
-export const UsersHeaderText = styled.h1`
-    margin: 0 0 30px;
-    color: #2c3a5a;
-    font-weight: 600;
+const UsersHeaderText = styled.h1`
+    font-size: 16px;
+    color: #131212;
+    margin: 0 0 1rem;
+    font-weight: 700;
 
     @media ${devices.mobile} {
-        font-size: 2rem;
+        font-size: 1.75rem;
         margin-top: 3.5px;
     }
 `;
 
-export const UserContent = styled.div`
-    display: flex;
-    border-bottom: 1px solid #eee;
-    margin-bottom: 1rem;
+const TableContainer = styled.div`
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+    border-spacing: 0;
 `;
 
-export const Column = styled.div`
-    display: flex;
-    flex-direction: column;
-    margin-right: 2rem;
-    &:nth-child(2) {
-        min-width: 230px;
+const Table = styled.table`
+    width: 100%;
+    border-spacing: 0 0.5em;
+    border-collapse: separate;
+    max-width: 1260px;
+`;
+
+const Thead = styled.thead`
+    visibility: hidden;
+    position: absolute;
+    color: #666;
+    transform: translateY(-150vw);
+
+    tr {
+        background: transparent;
+        box-shadow: none;
     }
-    &:nth-child(3) {
-        width: 230px;
-    }
-    &:nth-child(4) {
-        width: 100px;
-    }
-    &:nth-child(5) {
-        width: 100px;
+    @media screen and (min-width: 600px) {
+        visibility: visible;
+        position: relative;
+        transform: translateY(0);
     }
 `;
 
-export const ColumnType = styled.span`
-    color: #888;
-    font-size: 0.8rem;
+const Tbody = styled.tbody``;
+
+const TableRow = styled.tr`
+    display: block;
+    border: 1px solid #e6e6e6;
+    padding: 1rem 1rem 0;
+    background: #fdfdfd;
+    box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.025);
+
+    &:hover {
+        background: #fafafa;
+    }
+    @media screen and (min-width: 600px) {
+        display: table-row;
+        border-bottom-width: 1px;
+        margin-bottom: 0;
+    }
+`;
+
+const TableData = styled.td`
+    text-align: right;
+    font-size: 13px;
+    border-bottom: 1px dotted #ddd;
+    padding: 10px;
+    text-align: left;
+    font-weight: 500;
+    color: #444;
+    display: block;
+
+    @media ${devices.mobile} {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    &:last-child {
+        border-top-right-radius: 2.5px;
+        border-bottom-right-radius: 2.5px;
+    }
+
+    &:first-child {
+        border-top-left-radius: 2.5px;
+        border-bottom-left-radius: 2.5px;
+    }
+
+    @media screen and (min-width: 600px) {
+        display: table-cell;
+        text-align: left;
+        font-size: 14px;
+        border-bottom: none;
+    }
+    &:before {
+        content: attr(data-label);
+        float: left;
+        text-transform: uppercase;
+        font-weight: bold;
+        @media screen and (min-width: 600px) {
+            content: '';
+            display: none;
+        }
+    }
+`;
+const TableHeader = styled.th`
+    text-transform: uppercase;
+    font-size: 11px;
+    padding: 10px;
+    text-align: left;
 `;

@@ -25,9 +25,11 @@ const Container = styled.div`
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     margin-top: 1.5rem;
+    padding-left: 1.5rem;
 
     @media ${devices.tablet} {
         margin-top: 0.5rem;
+        padding-left: 0.75rem;
     }
 `;
 

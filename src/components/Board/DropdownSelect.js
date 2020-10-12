@@ -41,6 +41,7 @@ function DropdownSelect({ users, selected, type, handleChange }) {
                             email={user.email}
                             size={25}
                             rounded={true}
+                            right={'0.75rem'}
                         />
                         {user.name}
                     </ListItem>
@@ -67,6 +68,7 @@ function DropdownSelect({ users, selected, type, handleChange }) {
                                 email={selected.email}
                                 size={25}
                                 rounded={true}
+                                right={'0.75rem'}
                             />
                             {selected.name}
                             <FontAwesomeIcon icon={faTimes} />
@@ -101,8 +103,8 @@ const DropDownHeader = styled.ul`
     width: 100%;
     padding-top: 0.5rem;
     margin-bottom: 1rem;
-    background: #fff;
-    border: 1px solid #aaa;
+    border: 1px solid gainsboro;
+    background: #f7f7f7;
     outline: 0;
     border-radius: 2.5px;
     box-shadow: 0 1px 20px rgba(0, 0, 0, 0.025);
@@ -110,9 +112,11 @@ const DropDownHeader = styled.ul`
     display: flex;
     flex-wrap: wrap;
     cursor: pointer;
+    transition: 0.1s all;
     &:hover {
-        color: #666;
-        background-color: rgba(255, 255, 255, 0.75);
+        box-shadow: 0 1px 20px rgba(0, 0, 0, 0.025);
+        border: 1px solid #cecece;
+        background: #ececec;
     }
 `;
 
@@ -164,17 +168,18 @@ const SelectedItem = styled(ListItem)`
     display: flex;
     align-items: center;
     border-radius: 60px;
-    border: 0;
-    background: #efefef;
+    border: 1px solid #ffffff;
+    background: #f7f7f7;
     padding: 0;
     padding-right: 0.75rem;
+    box-shadow: 0 1px 7.5px rgba(0, 0, 0, 0.15);
 
     &:last-child {
         margin-bottom: 0.5rem;
     }
 
     svg {
-        margin-left: 0.5rem;
+        margin-left: 1rem;
         color: #666;
     }
 `;

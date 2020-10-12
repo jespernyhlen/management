@@ -106,34 +106,32 @@ export default connect(mapStateToProps, { openModal })(Column);
 
 const Container = styled.div`
     color: #222;
-    height: fit-content;
     border: 0;
+    border-radius: 2.5px;
     background-color: ${(props) =>
-        props.isDragging ? '#f5fbff' : 'transparent'};
+        props.isDragging ? '#f4f5f9cc' : 'transparent'};
     text-align: center;
     width: 275px;
-    margin-right: 0.5rem;
+    margin-right: 1.75rem;
     position: relative;
+    height: fit-content;
+
     &:last-child {
         margin-right: 0;
     }
 `;
 
 const Title = styled.h3`
-    font-size: 12px;
+    font-size: 16px;
     color: #131212;
-    margin: 0 0 0.25rem;
+    margin: 0 0 1.5rem;
     font-weight: 700;
-    border-top: 5px solid;
+    border-bottom: 3px solid;
     border-color: ${(props) =>
         props.borderColor ? props.borderColor : '#222'};
-    background: #fff;
     padding: 0.5rem 0.25rem;
-    border-radius: 2.5px;
-    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
-    text-align: center;
-    text-transform: uppercase;
-    height: 3rem;
+    text-align: left;
+    text-transform: capitalize;
     display: flex;
     flex-direction: column;
     justify-content: center;

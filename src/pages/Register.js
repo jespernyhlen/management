@@ -116,9 +116,7 @@ const Register = ({ history }) => {
             <br />
 
             <ButtonContainer>
-                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
-                    {buttonText}
-                </Button>
+                <Button onClick={clickSubmit}>{buttonText}</Button>
             </ButtonContainer>
         </form>
     );

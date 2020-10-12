@@ -85,7 +85,7 @@ const Container = styled.div`
     border-radius: 2.5px;
     color: #282c34;
     margin-top: 0.5rem;
-    padding: 0.75rem 0.5rem 0.125rem;
+    padding: 1.25rem 1rem 0.75rem;
 `;
 
 const Handle = styled.div`

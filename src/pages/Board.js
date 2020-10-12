@@ -9,7 +9,12 @@ import {
     removeAuthenticatedUser,
 } from '../utils/Helpers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faAngleDown } from '@fortawesome/free-solid-svg-icons';
+import {
+    faPlus,
+    faAngleDown,
+    faLongArrowAltRight,
+    faPlusCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import { PageNav, PageNavTitle } from '../styles/Layout';
@@ -32,6 +37,7 @@ import DropdownMenu from '../components/Board/DropdownMenu';
 import Column from '../components/Board/Column';
 import ColumnForm from '../components/Form/ColumnForm';
 import ActivityForm from '../components/Form/ActivityForm';
+import ActivityView from '../components/Form/ActivityView';
 
 const API_URL =
     process.env.REACT_APP_ENVIRONMENT === 'development'
@@ -128,6 +134,7 @@ function Board(props) {
 
         if (scope === 'board') return <BoardForm />;
         if (scope === 'column') return <ColumnForm />;
+        if (scope === 'activity' && action === 'view') return <ActivityView />;
         if (scope === 'activity') return <ActivityForm />;
     }
 
@@ -170,6 +177,9 @@ function Board(props) {
                             }
                         )}
                         {provided.placeholder}
+                        <ButtonSmall onClick={() => setModalOpen('column')}>
+                            <FontAwesomeIcon className='larger' icon={faPlus} />
+                        </ButtonSmall>
                     </Container>
                 )}
             </Droppable>
@@ -182,9 +192,12 @@ function Board(props) {
                 <PageNav>
                     <PageNavTitle>
                         <b>Activity Board</b>
-                        {gotBoards ? ' - ' + boards[boardIndex].title : null}
+                        {gotBoards && ' - ' + boards[boardIndex].title}
                     </PageNavTitle>
-                    <HorisontalDots onClick={() => setDropdownShown(true)} />
+                    <HorisontalDots
+                        light={true}
+                        onClick={() => setDropdownShown(true)}
+                    />
                     {gotBoards && (
                         <DropdownMenu
                             dropdownShown={dropdownShown}
@@ -208,7 +221,11 @@ function Board(props) {
                             </NavButton>
                         </ButtonContainer>
                         <ButtonContainer noMargin={true}>
-                            <NavButton onClick={() => setBoardListShown(true)}>
+                            <NavButton
+                                onClick={() =>
+                                    setBoardListShown(!boardListShown)
+                                }
+                            >
                                 <ArrowIcon icon={faAngleDown} />
                                 {width > 1024 && 'Choose Board'}
                             </NavButton>
@@ -218,24 +235,12 @@ function Board(props) {
                 </PageNav>
                 {gotBoards && (
                     <>
-                        <SemiNav>
-                            <BoardList
-                                boardListShown={boardListShown}
-                                setBoardListShown={setBoardListShown}
-                            />
-                        </SemiNav>
+                        <BoardList
+                            boardListShown={boardListShown}
+                            setBoardListShown={setBoardListShown}
+                        />
                         <DragDropContext onDragEnd={(e) => onDragEnd(e)}>
-                            <Container>
-                                {columns()}
-                                <ButtonSmall
-                                    onClick={() => setModalOpen('column')}
-                                >
-                                    <FontAwesomeIcon
-                                        className='larger'
-                                        icon={faPlus}
-                                    />
-                                </ButtonSmall>
-                            </Container>
+                            <Container>{columns()}</Container>
                         </DragDropContext>
                     </>
                 )}
@@ -274,16 +279,37 @@ const ContainerRight = styled.div`
     display: flex;
 `;
 
-const NavButton = styled(Button)`
-    background: #3e60ad;
-    margin-right: 1rem;
+const NavButton = styled.button`
+    color: #fff;
+    border: 0;
+    background: transparent;
+    margin-right: 1.5rem;
+    box-shadow: 0;
+    padding: 0 7.5px;
+    transition: 0.1s all;
+
+    &:hover {
+        color: #ddd;
+
+        svg {
+            border-color: #ddd !important;
+        }
+    }
+
+    &:focus {
+        outline: 0;
+    }
 
     svg {
         margin-right: 0.5rem;
     }
     @media ${devices.laptopSmall} {
         padding: 10px 15px;
-
+        background: #211931;
+        border-radius: 2.5px;
+        padding: 7.5px 10px;
+        margin-right: 0.25rem;
+        width: 4rem;
         svg {
             margin-right: 0;
         }
@@ -293,28 +319,29 @@ const NavButton = styled(Button)`
 const Container = styled.div`
     display: flex;
     overflow-y: auto;
-    padding-bottom: 1.75rem;
-    height: 100%;
+    padding: 1rem;
+    position: relative;
+    flex-grow: 1;
 `;
 
-const SemiNav = styled.div``;
 const PlusIcon = styled(FontAwesomeIcon)`
     margin-right: 2.5px;
     font-size: 0.775rem;
+    width: 12.75px !important;
+    height: 12.75px;
 `;
 
 const ArrowIcon = styled(FontAwesomeIcon)`
     margin-right: 2.5px;
-    margin-bottom: -1px;
+    margin-bottom: -2px;
     font-size: 1rem;
+    width: 17.5px !important;
+    height: 17.5px;
 `;
 
 const ButtonSmall = styled.button`
     padding: 0.25rem 0.35rem;
-    margin-left: 0.5rem;
     border: 0;
-    border-top: 5px solid;
-    border-color: #3e60ad;
     cursor: pointer;
     color: #3a3a3a;
     background: transparent;

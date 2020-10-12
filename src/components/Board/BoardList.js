@@ -81,22 +81,20 @@ const ListContainer = styled.div`
     display: flex;
     flex-direction: row;
     border-radius: 2.5px;
-    z-index: 11;
+    z-index: 10;
     width: fit-content;
     height: auto;
-    padding: 0.75rem;
-    margin-top: -0.333rem;
+    padding: 1rem 1.5rem 0;
 `;
 
 const ListItem = styled.a`
     color: #313131;
     padding: 0.5rem 0.75rem;
     font-size: 12px;
-    font-weight: 500;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-weight: 800;
+    font-weight: 600;
     border-radius: 2.5px;
     margin-right: 0.75rem;
     transition: 0.1s all;

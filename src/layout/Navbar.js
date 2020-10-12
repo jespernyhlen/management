@@ -18,6 +18,7 @@ import {
     faSignOutAlt,
     faSignInAlt,
     faUserPlus,
+    faUserFriends,
 } from '@fortawesome/free-solid-svg-icons';
 
 import styled from 'styled-components';
@@ -115,6 +116,7 @@ const Nav = ({ history, setIsInitialized }) => {
 
                 {isAuthenticated() && (
                     <>
+                        {listItem(faUserFriends, '/users', 'Members')}
                         {listItem(faTasks, '/board', 'Board')}
                         {logoutButton()}
                     </>
@@ -238,16 +240,17 @@ const MenuIcon = styled.label`
 const Navbar = styled.nav`
     background: #211931;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
     min-width: 220px;
     padding-top: 3.5rem;
 
     &.nav-closed {
         padding: 0;
+        width: 4.5rem;
 
         min-width: auto;
         @media ${devices.tablet} {
             padding: 1.5rem;
+            width: auto;
         }
     }
     @media ${devices.tablet} {
@@ -273,7 +276,7 @@ const NavList = styled.ul`
     span.nav-link {
         outline: none;
         border: none;
-        color: #dedede;
+        color: #8b8694;
         font-size: 0.9rem;
         font-weight: 600;
         letter-spacing: 0.5px;
@@ -283,11 +286,9 @@ const NavList = styled.ul`
         display: flex;
         padding: 12.5px 12.5px 30px;
         -webkit-transition: 0.2s;
-        border-left: 3px solid transparent;
-        border-right: 3px solid transparent;
         letter-spacing: 1px;
         font-weight: 400;
-        margin-left: -3px;
+        padding-left: 1.5rem;
         transition: 0.1s;
     }
     a.nav-link:hover,
@@ -300,7 +301,7 @@ const NavList = styled.ul`
 
     a.nav-link.active {
         color: #fff;
-        border-left: 3px solid #fff;
+        background: #2f2346;
     }
 
     svg {
@@ -317,10 +318,12 @@ const NavList = styled.ul`
 const NavListMobile = styled(NavList)`
     margin-top: 4.5rem;
     padding: 0 0.75rem;
+
     a.nav-link,
     span.nav-link {
         width: 100%;
         height: 40px;
+        padding-left: 12.5px;
     }
 
     svg {

@@ -8,10 +8,10 @@ export const ModalStyle = {
     overflow: 'auto',
     borderRadius: '4px',
     outline: 'none',
-    padding: '20px',
+    padding: '20px 30px',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    maxWidth: '400px',
-    background: '#f4f5f7',
+    maxWidth: '500px',
+    background: '#fff',
     minWidth: '350px',
 };

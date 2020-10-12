@@ -20,7 +20,14 @@ import ColorInput from './ColorInput';
 import FieldInput from './FieldInput';
 import DropdownSelect from '../Board/DropdownSelect';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import {
+    faTimes,
+    faHeading,
+    faAlignLeft,
+    faUsers,
+    faFlagCheckered,
+    faCalendarAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { ButtonContainer, Button } from '../../styles/Buttons';
 import { Colors } from '../../styles/Colors';
 import { ModalStyle } from '../../styles/ModalStyle';
@@ -149,6 +156,7 @@ function ActivityForm({
                                 value: newItem.title,
                                 handleChange: handleChange('title'),
                                 placeholder: 'Title for activity..',
+                                icon: faHeading,
                             }}
                         />
 
@@ -161,6 +169,7 @@ function ActivityForm({
                                 handleChange: handleChange('content'),
                                 textArea: true,
                                 placeholder: 'Describe your activity here..',
+                                icon: faAlignLeft,
                             }}
                         />
                         <FieldInput
@@ -171,6 +180,7 @@ function ActivityForm({
                                 value: newItem.date,
                                 handleChange: handleChange('date'),
                                 placeholder: 'Title for activity..',
+                                icon: faCalendarAlt,
                             }}
                         />
 
@@ -186,11 +196,14 @@ function ActivityForm({
                                 ),
                                 placeholder:
                                     'Short notification for the activity..',
+                                icon: faFlagCheckered,
                             }}
                         />
 
-                        <label htmlFor='color'>Notification Color</label>
-                        <div>
+                        <HiddenLabel htmlFor='color'>
+                            Notification Color
+                        </HiddenLabel>
+                        <ColorGroup>
                             {Colors.map((color) => {
                                 return (
                                     <ColorInput
@@ -204,8 +217,11 @@ function ActivityForm({
                                     />
                                 );
                             })}
-                        </div>
-                        <label htmlFor='members'>Members</label>
+                        </ColorGroup>
+                        <SectionTitle>
+                            <FontAwesomeIcon icon={faUsers} />
+                            <label htmlFor='members'>Members</label>
+                        </SectionTitle>
                         <DropdownSelect
                             users={users}
                             selected={newItem.members}
@@ -244,3 +260,26 @@ export default connect(mapStateToProps, {
     setActivity,
     setIsSaved,
 })(ActivityForm);
+
+const SectionTitle = styled.label`
+    color: #222;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+
+    svg {
+        margin-right: 0.75rem;
+        font-size: 0.825rem;
+        margin-bottom: 0.05rem;
+    }
+`;
+
+const HiddenLabel = styled.label`
+    opacity: 0;
+    transform: translateX(-150vw);
+    height: 0;
+`;
+
+const ColorGroup = styled.div`
+    margin-top: -2.25rem;
+`;

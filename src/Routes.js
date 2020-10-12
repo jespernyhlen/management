@@ -8,6 +8,7 @@ import ActivateAccount from './pages/ActivateAccount';
 import Home from './pages/Home';
 import Private from './pages/Private';
 import Admin from './pages/Admin';
+import Users from './pages/Users';
 
 import PrivateRoute from './auth/PrivateRoute';
 import AdminRoute from './auth/AdminRoute';
@@ -32,6 +33,7 @@ const Routes = () => {
             />
             <PrivateRoute path='/board' exact component={Board} />
             <PrivateRoute path='/private' exact component={Private} />
+            <PrivateRoute path='/users' exact component={Users} />
             <AdminRoute path='/admin' exact component={Admin} />
             <Route
                 path='/auth/password/forgot'
