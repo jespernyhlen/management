@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import jwt from 'jsonwebtoken';
 import axios from 'axios';
-import Notification from '../components/Notification';
+
+/* STYLES */
 import {
     FormGroup,
     FormContainer,
@@ -12,10 +13,10 @@ import {
 } from '../styles/FormStyles';
 import { ButtonContainer, Button } from '../styles/Buttons';
 
-const API_URL =
-    process.env.REACT_APP_ENVIRONMENT === 'development'
-        ? 'http://localhost:8888/api'
-        : process.env.REACT_APP_API;
+/* COMPONENTS */
+import Notification from '../components/Notification';
+
+import { API_URL } from '../constants';
 
 const ResetPassword = ({ match }) => {
     const [values, setValues] = useState({
@@ -74,9 +75,7 @@ const ResetPassword = ({ match }) => {
             <br />
 
             <ButtonContainer>
-                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
-                    {buttonText}
-                </Button>
+                <Button onClick={clickSubmit}>{buttonText}</Button>
             </ButtonContainer>
         </form>
     );

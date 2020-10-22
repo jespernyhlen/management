@@ -19,7 +19,13 @@ import {
     UPDATE_ACTIVITY,
     DELETE_ACTIVITY,
     MOVE_ACTIVITY,
+    SET_USER,
     SET_USERS,
+    SET_TEAM,
+    SET_TEAMS,
+    ADD_TEAM,
+    UPDATE_TEAM,
+    DELETE_TEAM,
 } from './types';
 
 /******** COMMON ********/
@@ -191,6 +197,32 @@ export const moveActivity = (destination, source, draggableID) => async (
 
 /******** USERS ********/
 
+export const setUser = (user) => async (dispatch) => {
+    dispatch({ type: SET_USER, user });
+};
+
 export const setUsers = (users) => async (dispatch) => {
     dispatch({ type: SET_USERS, users });
+};
+
+/******** TEAM ********/
+
+export const setTeam = (ID, name) => async (dispatch) => {
+    dispatch({ type: SET_TEAM, ID, name });
+};
+
+export const setTeams = (teams) => async (dispatch) => {
+    dispatch({ type: SET_TEAMS, teams });
+};
+
+export const addTeam = (team) => async (dispatch) => {
+    dispatch({ type: ADD_TEAM, team });
+};
+
+export const updateTeam = (team) => async (dispatch) => {
+    dispatch({ type: UPDATE_TEAM, team });
+};
+
+export const deleteTeam = (id) => async (dispatch) => {
+    dispatch({ type: DELETE_TEAM, id });
 };

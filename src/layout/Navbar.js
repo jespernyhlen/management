@@ -2,14 +2,17 @@ import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { Link, withRouter } from 'react-router-dom';
 import { devices } from '../styles/Devices';
-
 import {
     isAuthenticated,
     getAuthenticatedUser,
     removeAuthenticatedUser,
 } from '../utils/Helpers';
-import NavProfile from './NavProfile';
-import { setIsInitialized } from '../actions';
+
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
+/* STYLES */
+import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faHome,
@@ -21,9 +24,10 @@ import {
     faUserFriends,
 } from '@fortawesome/free-solid-svg-icons';
 
-import styled from 'styled-components';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
+/* COMPONENTS */
+import NavProfile from './NavProfile';
+
+import { setIsInitialized } from '../actions';
 
 const Nav = ({ history, setIsInitialized }) => {
     const [navOpen, setNavOpen] = useState();
@@ -54,7 +58,7 @@ const Nav = ({ history, setIsInitialized }) => {
                             onClose();
                         }}
                     >
-                        OK
+                        Logout
                     </AlertButton>
                 </ConfirmAlertButtonGroup>
             </ConfirmAlertBody>
@@ -83,7 +87,7 @@ const Nav = ({ history, setIsInitialized }) => {
 
     const listItem = (icon, path, name) => {
         return (
-            <li className='nav-item'>
+            <li className='nav-item' onClick={() => setNavOpen(false)}>
                 <Link to={path} className={isActive(path)}>
                     <FontAwesomeIcon icon={icon} />
                     {navOpen && name}
@@ -110,14 +114,12 @@ const Nav = ({ history, setIsInitialized }) => {
                     getAuthenticatedUser().role === 'member' &&
                     listItem(faUser, '/private', 'Profile')}
 
-                {isAuthenticated() &&
-                    getAuthenticatedUser().role === 'admin' &&
-                    listItem(faUser, '/admin', 'Profile')}
-
                 {isAuthenticated() && (
                     <>
-                        {listItem(faUserFriends, '/users', 'Members')}
-                        {listItem(faTasks, '/board', 'Board')}
+                        {/* {listItem(faUserFriends, '/users', 'Members')} */}
+                        {listItem(faTasks, '/trelloprivate', 'Board')}
+                        {listItem(faUserFriends, '/teams', 'Teams')}
+
                         {logoutButton()}
                     </>
                 )}
@@ -139,6 +141,8 @@ const Nav = ({ history, setIsInitialized }) => {
                         <span className='navicon'></span>
                     </MenuIcon>
                 </MenuButtonContainer>
+                <NavLogo>WEBTRELLO</NavLogo>
+
                 {navOpen && isAuthenticated() && (
                     <NavProfile user={getAuthenticatedUser()} />
                 )}
@@ -165,7 +169,10 @@ const MenuButtonContainer = styled.div`
     left: 3.75px;
     top: 5px;
     @media ${devices.tablet} {
-        position: inherit;
+        position: relative;
+        right: 2.5px;
+        left: 0;
+        top: 0px;
     }
 `;
 
@@ -198,7 +205,7 @@ const MenuButton = styled.input`
 const MenuIcon = styled.label`
     cursor: pointer;
     display: inline-block;
-    padding: 18px 15px;
+    padding: 1rem;
     position: relative;
     user-select: none;
     margin: 10px 2.75px;
@@ -234,11 +241,12 @@ const MenuIcon = styled.label`
         float: right;
         margin: 0;
         padding: 10px 0;
+        margin-right: 1.5rem;
     }
 `;
 
 const Navbar = styled.nav`
-    background: #211931;
+    background: #191a31;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
     min-width: 220px;
     padding-top: 3.5rem;
@@ -249,12 +257,29 @@ const Navbar = styled.nav`
 
         min-width: auto;
         @media ${devices.tablet} {
-            padding: 1.5rem;
-            width: auto;
+            padding: 1.25rem 0;
+            width: 100%;
+            height: 4rem;
+            position: absolute;
         }
     }
     @media ${devices.tablet} {
-        padding: 1.5rem;
+        padding: 1.25rem 0 1.25rem;
+        width: 100%;
+        position: absolute;
+        z-index: 15;
+    }
+`;
+
+const NavLogo = styled.p`
+    display: none;
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 1px;
+
+    @media ${devices.tablet} {
+        display: initial;
+        margin-left: 1.5rem;
     }
 `;
 
@@ -263,6 +288,10 @@ const NavList = styled.ul`
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+
+    @media ${devices.tablet} {
+        margin-top: 2.5rem;
+    }
 
     li {
         align-self: center;
@@ -317,13 +346,12 @@ const NavList = styled.ul`
 
 const NavListMobile = styled(NavList)`
     margin-top: 4.5rem;
-    padding: 0 0.75rem;
 
     a.nav-link,
     span.nav-link {
         width: 100%;
         height: 40px;
-        padding-left: 12.5px;
+        padding-left: 1.5rem;
     }
 
     svg {
@@ -362,15 +390,13 @@ const AlertButton = styled.button`
     border: none;
     border-radius: 2.5px;
     display: inline-block;
-    padding: 10px 14px;
+    padding: 0.75rem 1.75rem;
     margin-right: 10px;
     margin-left: 10px;
-    font-size: 0.9rem;
-    font-weight: 700;
+    font-size: 14px;
+    font-weight: 600;
     cursor: pointer;
-    width: 80px;
-    background: #3e60ad;
-
+    background: linear-gradient(180deg, #633ab7, #562aaf);
     color: #fff;
     letter-spacing: 0.5px;
     box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.2);

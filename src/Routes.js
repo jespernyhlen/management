@@ -4,21 +4,15 @@ import { Switch, Route } from 'react-router-dom';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ActivateAccount from './pages/ActivateAccount';
-
 import Home from './pages/Home';
 import Private from './pages/Private';
-import Admin from './pages/Admin';
 import Users from './pages/Users';
-
 import PrivateRoute from './auth/PrivateRoute';
-import AdminRoute from './auth/AdminRoute';
-
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-
-import Board from './pages/Board';
-
-// import Users from './pages/Users';
+import TrelloPrivate from './pages/TrelloPrivate';
+import Teams from './pages/Teams';
+import TrelloTeam from './pages/TrelloTeam';
 
 const Routes = () => {
     return (
@@ -31,10 +25,13 @@ const Routes = () => {
                 exact
                 component={ActivateAccount}
             />
-            <PrivateRoute path='/board' exact component={Board} />
+            <PrivateRoute
+                path='/trelloprivate'
+                exact
+                component={TrelloPrivate}
+            />
             <PrivateRoute path='/private' exact component={Private} />
             <PrivateRoute path='/users' exact component={Users} />
-            <AdminRoute path='/admin' exact component={Admin} />
             <Route
                 path='/auth/password/forgot'
                 exact
@@ -45,6 +42,9 @@ const Routes = () => {
                 exact
                 component={ResetPassword}
             />
+            <Route path='/teams' exact component={Teams} />
+            <PrivateRoute path='/teams/:id' exact component={TrelloTeam} />
+
             <Route path='/' component={Home} />
         </Switch>
     );

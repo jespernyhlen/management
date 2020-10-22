@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getCookie, removeAuthenticatedUser } from '../utils/Helpers';
-import Notification from '../components/Notification';
 import Gravatar from 'react-gravatar';
 import styled, { css } from 'styled-components';
-import { PageNav, PageNavTitle } from '../styles/Layout';
+import { Header, HeaderTitle } from '../styles/Header';
 
 import { devices } from '../styles/Devices';
-
-const API_URL =
-    process.env.REACT_APP_ENVIRONMENT === 'development'
-        ? 'http://localhost:8888/api'
-        : process.env.REACT_APP_API;
+import { API_URL } from '../constants';
 
 const Users = ({ history }) => {
     const [values, setValues] = useState({
@@ -49,14 +44,13 @@ const Users = ({ history }) => {
 
     let getHeaders = () => {
         var columns = headers.map((head) => {
-            return <TableHeader>{head}</TableHeader>;
+            return <TableHeader key={head}>{head}</TableHeader>;
         });
         return <TableRow>{columns}</TableRow>;
     };
 
     let getRows = () => {
         return Object.keys(users).map((key, index) => {
-            console.log(users[key]);
             return (
                 <TableRow key={key}>
                     <TableData>
@@ -92,11 +86,11 @@ const Users = ({ history }) => {
 
     return (
         <>
-            <PageNav>
-                <PageNavTitle>
+            <Header>
+                <HeaderTitle>
                     <b>Members</b> - Information
-                </PageNavTitle>
-            </PageNav>
+                </HeaderTitle>
+            </Header>
             <UsersContainer>
                 <UsersHeader>
                     <UsersHeaderText>

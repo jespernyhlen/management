@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { withRouter, Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
-import {
-    setClientData,
-    isAuthenticated,
-    getAuthenticatedUser,
-} from '../utils/Helpers';
-import Notification from '../components/Notification';
+import { setClientData, isAuthenticated } from '../utils/Helpers';
+
+/* STYLES */
 import {
     FormGroup,
     FormContainer,
@@ -17,17 +15,15 @@ import {
     TextWithLink,
     TextLine,
 } from '../styles/FormStyles';
-import { ButtonContainer, Button } from '../styles/Buttons';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUnlockAlt, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { ButtonContainer, Button } from '../styles/Buttons';
 
-const API_URL =
-    process.env.REACT_APP_ENVIRONMENT === 'development'
-        ? 'http://localhost:8888/api'
-        : process.env.REACT_APP_API;
+/* COMPONENTS */
+import Notification from '../components/Notification';
 
-console.log(process.env.REACT_APP_ENVIRONMENT);
+import { API_URL } from '../constants';
+
 const Login = ({ history }) => {
     const [values, setValues] = useState({
         email: '',
@@ -58,10 +54,7 @@ const Login = ({ history }) => {
                         password: '',
                         buttonText: 'SIGNED IN',
                     });
-
-                    isAuthenticated() && getAuthenticatedUser().role === 'admin'
-                        ? history.push('/admin')
-                        : history.push('/private');
+                    isAuthenticated() && history.push('/trelloprivate');
                 });
             })
             .catch((error) => {
@@ -134,4 +127,8 @@ const Login = ({ history }) => {
     );
 };
 
-export default Login;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+export default withRouter(connect(mapStateToProps, {})(Login));

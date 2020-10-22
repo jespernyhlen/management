@@ -68,18 +68,23 @@ main {
 
     @media ${devices.tablet} {
         width: auto;
+        margin-top: 4rem;
     }
 }
 
 
 .ReactModal__Overlay--after-open {
     background-color: #060606bf !important;
-    z-index: 10;
+    z-index: 200;
 }
 
 .react-confirm-alert-overlay {
     z-index: 100;
     background-color: #060606bf !important;
+}
+
+form {
+    margin-bottom: 1.75rem;
 }
 
 `;

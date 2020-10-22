@@ -1,74 +1,43 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
+
+/* STYLES */
+import { devices } from '../../styles/Devices';
+
 import { deleteActivity, openModal, setBoardIndex } from '../../actions';
 
-function BoardList(props) {
-    const {
-        boardListShown,
-        setBoardListShown,
-        boards,
-        setBoardIndex,
-        boardIndex,
-    } = props;
-
-    const wrapperRef = useRef(null);
-    const [isVisible, setIsVisible] = useState(boardListShown);
-
-    useEffect(() => {
-        setIsVisible(boardListShown);
-    }, [boardListShown]);
-
-    useEffect(() => {
-        document.addEventListener('click', handleClickOutside, false);
-        return () => {
-            document.removeEventListener('click', handleClickOutside, false);
-        };
-    }, []);
-
-    const handleClickOutside = (event) => {
-        if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-            setIsVisible(false);
-            setBoardListShown(false);
-        }
-    };
-
-    function setModalOpen() {
-        setIsVisible(false);
-        setBoardListShown(false);
-    }
+// Component used to show boards available (semi navbar).
+// Can be used within personal boards, or boards witihin a team.
+const BoardList = (props) => {
+    const { clickHandler, boardIndex, board } = props;
 
     return (
         <>
-            {isVisible && (
-                <ListContainer ref={wrapperRef}>
-                    {boards.map((board, i) => {
-                        return (
-                            <ListItem
-                                style={{
-                                    color:
-                                        boardIndex === boards.indexOf(board)
-                                            ? '#000'
-                                            : '#666',
-                                }}
-                                key={i}
-                                onClick={() => {
-                                    setBoardIndex(i);
-                                    setModalOpen();
-                                }}
-                            >
-                                {board.title}
-                            </ListItem>
-                        );
-                    })}
-                </ListContainer>
-            )}
+            <ListContainer>
+                {board.boards.map((item, i) => {
+                    return (
+                        <ListItem
+                            style={{
+                                color:
+                                    boardIndex === board.boards.indexOf(item)
+                                        ? '#000'
+                                        : '#666',
+                            }}
+                            key={i}
+                            onClick={() => clickHandler(i)}
+                        >
+                            {item.title}
+                        </ListItem>
+                    );
+                })}
+            </ListContainer>
         </>
     );
-}
+};
 
 const mapStateToProps = (state) => {
-    return { boards: state.board.boards, boardIndex: state.board.boardIndex };
+    return { boardIndex: state.board.boardIndex, board: state.board };
 };
 
 export default connect(mapStateToProps, {
@@ -85,6 +54,10 @@ const ListContainer = styled.div`
     width: fit-content;
     height: auto;
     padding: 1rem 1.5rem 0;
+
+    @media ${devices.tabletSmall} {
+        padding: 1rem 0.75rem 0;
+    }
 `;
 
 const ListItem = styled.a`

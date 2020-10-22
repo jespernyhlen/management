@@ -1,14 +1,14 @@
 import React from 'react';
-import GravatarImage from './Gravatar';
+// import GravatarImage from './Gravatar';
 import styled from 'styled-components';
 import { devices } from '../styles/Devices';
 
 const NavProfile = ({ user }) => {
     return (
         <Container>
-            <ProfileImage>
+            {/* <ProfileImage>
                 <GravatarImage email={user.email} size={40} />
-            </ProfileImage>
+            </ProfileImage> */}
             <ProfileInfo>
                 <ProfileName>{user.name}</ProfileName>
                 <ProfileEmail>{user.email}</ProfileEmail>
@@ -20,16 +20,15 @@ const NavProfile = ({ user }) => {
 export default NavProfile;
 
 const Container = styled.div`
-    display: flex;
-    border-bottom: 1px solid #281f3a;
+    border-bottom: 2px solid #9494940a;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    margin-top: 1.5rem;
+    margin-top: 1.75rem;
     padding-left: 1.5rem;
 
     @media ${devices.tablet} {
-        margin-top: 0.5rem;
-        padding-left: 0.75rem;
+        padding-left: 0;
+        margin: 3rem 1.5rem 0;
     }
 `;
 
@@ -42,7 +41,6 @@ const ProfileInfo = styled.div`
 `;
 
 const ProfileImage = styled.div`
-    text-align: center;
     margin-bottom: 1rem;
 `;
 
@@ -53,9 +51,10 @@ const ProfileName = styled.p`
 `;
 
 const ProfileEmail = styled.p`
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     margin-bottom: 0.25rem;
-    color: #eee;
+    color: #868290;
+    font-weight: 600;
 `;
 const ProfileRole = styled(ProfileEmail)`
     text-transform: capitalize;

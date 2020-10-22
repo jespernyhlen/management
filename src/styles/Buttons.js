@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 
-export const ButtonContainer = styled.div`
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: ${(props) => (props.noMargin ? '0' : '15px')};
-`;
+import { devices } from './Devices';
 
 export const Button = styled.button`
     outline: none;
@@ -21,8 +17,10 @@ export const Button = styled.button`
     font-weight: 600;
     letter-spacing: 0.75px;
     padding: 1rem 2rem;
-    width: 100%;
+    width: fit-content;
+    min-width: 125px;
     height: auto;
+    text-transform: capitalize;
     transition: 0.2s;
 
     &:hover {
@@ -32,6 +30,83 @@ export const Button = styled.button`
     &:disabled {
         opacity: 0.5;
         cursor: default;
+    }
+
+    @media ${devices.tabletSmall} {
+        margin: 1rem 0 0;
+        margin: 0;
+
+        font-size: 12px;
+        padding: 1rem 1.5rem;
+    }
+`;
+
+export const ButtonContainer = styled.div`
+    display: flex;
+    justify-content: center;
+
+    ${Button} {
+        margin-left: 0.5rem;
+
+        @media ${devices.tabletSmall} {
+            margin: 1rem 0.5rem 0 0;
+            margin: 0 0.5rem 0 0;
+        }
+    }
+`;
+
+export const DropdownButton = styled.div`
+    width: 13.5px;
+    height: 13.5px;
+    background-image: ${(props) =>
+        props.light
+            ? 'radial-gradient(circle, #fff 1.5px, #13131300 0.5px)'
+            : 'radial-gradient(circle, #000 1.5px, #13131300 0.5px)'};
+    background-size: 100% 33.33%;
+    transform: rotate(90deg);
+    position: absolute;
+    right: ${(props) => (props.type === 'header' ? '12.5px' : '7.5px')};
+    top: ${(props) => (props.type === 'header' ? '10px' : '5px')};
+    cursor: pointer;
+    z-index: 10;
+    transition: 0.1s all;
+
+    &:hover {
+        background-image: ${(props) =>
+            props.light
+                ? 'radial-gradient(circle, #ddd 1.5px, #13131300 0.5px)'
+                : 'radial-gradient(circle, #666 1.5px, #13131300 0.5px)'};
+    }
+`;
+
+export const DropdownButtonSolid = styled.div`
+    box-shadow: 0 4px 16px rgba(82, 45, 169, 0.24);
+    background: ${(props) =>
+        props.bgColor
+            ? props.bgColor
+            : 'linear-gradient(180deg, #633ab7, #562aaf)'};
+    border-radius: 2px;
+    padding: 1rem;
+    margin-left: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: 0.1s all;
+
+    &:hover {
+        filter: brightness(1.15);
+    }
+
+    ${DropdownButton} {
+        position: relative;
+        right: auto;
+        top: auto;
+        background-image: radial-gradient(circle, #fff 1.5px, #13131300 0.5px);
+    }
+
+    @media ${devices.tabletSmall} {
+        margin-left: 0;
     }
 `;
 
@@ -62,24 +137,3 @@ export const Button = styled.button`
 //         cursor: default;
 //     }
 // `;
-
-export const HorisontalDots = styled.div`
-    width: 13.5px;
-    height: 13.5px;
-    background-image: ${(props) =>
-        props.light
-            ? 'radial-gradient(circle, #fff 1.5px, #13131300 0.5px)'
-            : 'radial-gradient(circle, #000 1.5px, #13131300 0.5px)'};
-    background-size: 100% 33.33%;
-    transform: rotate(90deg);
-    position: absolute;
-    right: ${(props) => (props.right ? props.right : '7.5px')};
-    top: ${(props) => (props.top ? props.top : '5px')};
-    cursor: pointer;
-    z-index: 10;
-    transition: 0.1s all;
-
-    &:hover {
-        background-image: radial-gradient(circle, #000 1px, #13131300 1.5px);
-    }
-`;

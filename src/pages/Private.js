@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Gravatar from 'react-gravatar';
 import {
     getAuthenticatedUser,
     getCookie,
     removeAuthenticatedUser,
     updateUser,
 } from '../utils/Helpers';
-import Notification from '../components/Notification';
-import Gravatar from 'react-gravatar';
 
+/* STYLES */
 import {
     FormHeader,
     FormGroup,
@@ -18,13 +18,16 @@ import {
     InputFieldWithLabel,
     Label,
 } from '../styles/FormStyles';
-import { PageNav, PageNavTitle } from '../styles/Layout';
+import { Header, HeaderTitle } from '../styles/Header';
 import { ButtonContainer, Button } from '../styles/Buttons';
 
-const API_URL =
-    process.env.REACT_APP_ENVIRONMENT === 'development'
-        ? 'http://localhost:8888/api'
-        : process.env.REACT_APP_API;
+/* COMPONENTS */
+import Loader from '../components/Loader';
+import Notification from '../components/Notification';
+
+import { API_URL } from '../constants';
+
+const token = getCookie('token');
 
 const Private = ({ history }) => {
     const [values, setValues] = useState({
@@ -33,9 +36,8 @@ const Private = ({ history }) => {
         email: '',
         password: '',
         buttonText: 'Update',
+        isLoading: true,
     });
-
-    const token = getCookie('token');
 
     useEffect(() => {
         axios({
@@ -47,7 +49,7 @@ const Private = ({ history }) => {
         })
             .then((response) => {
                 const { role, name, email } = response.data;
-                setValues({ ...values, role, name, email });
+                setValues({ ...values, role, name, email, isLoading: false });
             })
             .catch((error) => {
                 if (error.response.status !== 200) {
@@ -81,6 +83,7 @@ const Private = ({ history }) => {
                         ...values,
                         password: '',
                         buttonText: 'Update',
+                        isLoading: false,
                     });
                     Notification('Profile updated successfully', 'success');
                 });
@@ -139,36 +142,39 @@ const Private = ({ history }) => {
             <br />
 
             <ButtonContainer>
-                <Button bgColor={'#3e60ad'} onClick={clickSubmit}>
-                    {buttonText}
-                </Button>
+                <Button onClick={clickSubmit}>{buttonText}</Button>
             </ButtonContainer>
         </form>
     );
 
     return (
         <>
-            <PageNav>
-                <PageNavTitle>
+            <Header>
+                <HeaderTitle>
                     <b>User Settings</b>
-                    {values && ' - ' + values.name}
-                </PageNavTitle>
-            </PageNav>
+                    {!values.isLoading && ' - ' + values.name}
+                </HeaderTitle>
+            </Header>
+
             <FormContainer>
-                <FormContent>
-                    <FormHeader>
-                        <Gravatar
-                            email={email}
-                            size={40}
-                            style={{
-                                margin: '0 1.5rem 2rem 0',
-                                borderRadius: '5px',
-                            }}
-                        />
-                        <FormHeaderText>Profile</FormHeaderText>
-                    </FormHeader>
-                    {displayForm()}
-                </FormContent>
+                {!values.isLoading ? (
+                    <FormContent>
+                        <FormHeader>
+                            <Gravatar
+                                email={email}
+                                size={40}
+                                style={{
+                                    margin: '0 1.5rem 2rem 0',
+                                    borderRadius: '5px',
+                                }}
+                            />
+                            <FormHeaderText>Profile</FormHeaderText>
+                        </FormHeader>
+                        {displayForm()}
+                    </FormContent>
+                ) : (
+                    <Loader />
+                )}
             </FormContainer>
         </>
     );

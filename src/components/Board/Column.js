@@ -1,64 +1,70 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import { openModal } from '../../actions';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+
+/* STYLES */
+import styled from 'styled-components';
+import { DropdownButton } from '../../styles/Buttons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import Activity from './Activity';
+
+/* COMPONENTS */
 import DropdownMenu from './DropdownMenu';
-import { HorisontalDots } from '../../styles/Buttons';
+import ActivityList from './ActivityList';
 
-// To optimize, and prevent multiple React renders, React.memo() is used.
-// Similar to usage of shouldComponentUpdate()
-const ActivityList = React.memo((props) => {
-    const { columnID, color } = props;
+import { openModal, deleteColumn } from '../../actions';
 
-    return props.activities.map((activity, index) => (
-        <Activity
-            key={activity[0].id}
-            activity={activity[0]}
-            index={index}
-            columnID={columnID}
-            color={color}
-        />
-    ));
-});
-
-function Column({ boardIndex, column, activities, openModal, index }) {
+// Component for rendering each column in a board.
+// And button for creating a new activity associated to the column.
+const Column = ({
+    boardIndex,
+    column,
+    activities,
+    openModal,
+    index,
+    deleteColumn,
+}) => {
     const [dropdownShown, setDropdownShown] = useState(false);
+    const { _id, title, color } = column;
 
+    // "Global" modal is created in parent component, gets information from current scope.
+    // Modal information associated with current scope Column.
     let modalContent = {
         scope: 'column',
         action: 'edit',
         boardID: boardIndex,
-        columnID: column.id,
-        activityID: '',
-        color: column.color,
+        columnID: _id,
+        color: color,
+        content: column,
     };
 
-    function setModalOpen() {
-        modalContent.scope = 'activity';
-        modalContent.action = 'create';
+    // If button for creating a new activity associated to the column is pressed,
+    // Set modal information to activity instead.
+    const createActivity = () => {
+        openModal(true, {
+            ...modalContent,
+            scope: 'activity',
+            action: 'create',
+        });
+    };
 
-        openModal(true, modalContent);
-    }
+    // Delete column with current ID.
+    const deleteContent = () => {
+        deleteColumn(_id);
+    };
 
     return (
-        <Draggable draggableId={column.id} index={index}>
+        <Draggable draggableId={_id} index={index}>
             {(provided, snapshot) => (
                 <Container
                     {...provided.draggableProps}
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                 >
-                    <Title
-                        {...provided.dragHandleProps}
-                        borderColor={column.color}
-                    >
-                        {column.title}
+                    <Title {...provided.dragHandleProps} borderColor={color}>
+                        {title}
                     </Title>
-                    <Droppable droppableId={column.id} type='activity'>
+                    <Droppable droppableId={_id} type='activity'>
                         {(provided, snapshot) => {
                             return (
                                 <ActivitiesContainer
@@ -66,35 +72,37 @@ function Column({ boardIndex, column, activities, openModal, index }) {
                                     {...provided.droppableProps}
                                     isDraggingOver={snapshot.isDraggingOver}
                                 >
-                                    <HorisontalDots
-                                        onClick={() => {
-                                            setDropdownShown(true);
-                                        }}
+                                    <DropdownButton
+                                        onClick={() => setDropdownShown(true)}
                                     />
                                     <DropdownMenu
                                         dropdownShown={dropdownShown}
                                         setDropdownShown={setDropdownShown}
                                         content={modalContent}
+                                        deleteContent={deleteContent}
                                     />
-                                    <ActivityList
-                                        activities={activities}
-                                        columnID={column.id}
-                                        color={column.color}
-                                    />
+                                    {activities.length > 0 && (
+                                        <ActivityList
+                                            activities={activities}
+                                            columnID={_id}
+                                            color={color}
+                                        />
+                                    )}
+
                                     {provided.placeholder}
                                 </ActivitiesContainer>
                             );
                         }}
                     </Droppable>
 
-                    <ButtonSmall onClick={setModalOpen}>
+                    <ButtonSmall onClick={createActivity}>
                         <FontAwesomeIcon className='larger' icon={faPlus} />
                     </ButtonSmall>
                 </Container>
             )}
         </Draggable>
     );
-}
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -102,7 +110,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, { openModal })(Column);
+export default connect(mapStateToProps, { openModal, deleteColumn })(Column);
 
 const Container = styled.div`
     color: #222;

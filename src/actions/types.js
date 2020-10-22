@@ -31,4 +31,12 @@ export const DELETE_ACTIVITY = 'DELETE_ACTIVITY';
 export const MOVE_ACTIVITY = 'MOVE_ACTIVITY';
 
 /******** USERS ********/
+export const SET_USER = 'SET_USER';
 export const SET_USERS = 'SET_USERS';
+
+/******** TEAM ********/
+export const SET_TEAM = 'SET_TEAM';
+export const SET_TEAMS = 'SET_TEAMS';
+export const ADD_TEAM = 'ADD_TEAM';
+export const UPDATE_TEAM = 'UPDATE_TEAM';
+export const DELETE_TEAM = 'DELETE_TEAM';

@@ -2,7 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styled, { css } from 'styled-components';
 
-function FieldInput({ values }) {
+const FieldInput = ({ values }) => {
     const {
         name,
         label,
@@ -40,7 +40,6 @@ function FieldInput({ values }) {
                 {icon && <FontAwesomeIcon icon={icon} />}
                 {inputLabel}
             </SectionTitle>
-
             <Input
                 type={type}
                 id={name}
@@ -51,7 +50,7 @@ function FieldInput({ values }) {
             />
         </>
     );
-}
+};
 
 export default FieldInput;
 
@@ -100,6 +99,6 @@ const TextArea = styled.textarea`
     ${BaseInput};
     height: auto;
     overflow: hidden;
-    height: 100px;
+    height: 60px;
     background: #f7f7f7;
 `;

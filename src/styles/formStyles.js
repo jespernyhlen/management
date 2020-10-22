@@ -11,58 +11,6 @@ export const baseInputStyles = css`
     border: none;
 `;
 
-// export const Container = styled.div`
-//     margin: 0 auto;
-//     display: flex;
-//     width: 100%;
-//     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
-//     /* overflow: hidden; */
-//     /* position: absolute; */
-//     /* top: 50%;
-//     left: 50%;
-//     transform: translate(-50%, -50%); */
-//     max-width: 1260px;
-//     flex-direction: ${(props) =>
-//         props.direction === 'reverse' ? 'row' : 'row-reverse'};
-
-//     @media ${devices.tablet} {
-//         flex-direction: column;
-//         box-shadow: none;
-//     }
-// `;
-
-// Style for container with background image and content
-// export const ImageContainer = styled.div`
-//     position: relative;
-//     width: 70%;
-//     box-shadow: 0 3px 20px rgba(0, 0, 0, 0.2);
-//     margin: -40px 0 -40px;
-//     background: ${(props) => (props.backgroundUrl ? props.backgroundUrl : '')};
-//     background-repeat: no-repeat;
-//     background-size: cover;
-//     border: 10px solid #fff;
-//     padding: 1rem 1rem 2rem 0.5rem;
-//     z-index: 100;
-
-//     @media ${devices.laptopSmall} {
-//         width: 60%;
-//     }
-
-//     @media ${devices.tablet} {
-//         width: 100%;
-//         margin: 0;
-//         box-shadow: none;
-//         border: 0;
-//         padding: 0;
-//     }
-// `;
-// export const ImageOverlay = styled.div`
-//     opacity: 0.9;
-//     background: linear-gradient(145deg, #0b1630, #1b2d58);
-//     height: 100%;
-//     width: 100%;
-//     min-height: 400px;
-// `;
 export const ContentContainer = styled.div`
     padding: 80px;
     position: absolute;
@@ -143,7 +91,7 @@ export const FormContent = styled.div`
     padding: 30px;
     max-width: 450px;
     margin: 0 auto;
-    height: 100%;
+    height: calc(100% - 7.5rem);
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -155,6 +103,10 @@ export const FormContent = styled.div`
 
     @media ${devices.laptop} {
         padding: 40px;
+    }
+
+    @media ${devices.laptopSmall} {
+        height: calc(100vh - 9rem);
     }
 
     @media ${devices.mobile} {
@@ -169,12 +121,12 @@ export const FormHeader = styled.div`
 `;
 
 export const FormHeaderText = styled.h1`
-    margin: 4px 0 30px;
+    margin: 0 0 1.25rem;
     color: #222;
+    text-align: center;
 
     @media ${devices.mobile} {
         font-size: 2rem;
-        margin-top: 3.5px;
     }
 `;
 
@@ -224,7 +176,6 @@ export const InputFieldWithLabel = styled.input`
     height: 2.5rem;
     width: 100%;
     padding: 8px 12px;
-    margin-bottom: 1rem;
     outline: 0;
     border-radius: 2.5px;
     font-size: 0.9rem;

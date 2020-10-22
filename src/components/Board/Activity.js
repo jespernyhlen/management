@@ -1,18 +1,56 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import styled from 'styled-components';
-import GravatarImage from '../../layout/Gravatar';
 import { Draggable } from 'react-beautiful-dnd';
+
+/* STYLES */
+import styled from 'styled-components';
+import { DropdownButton } from '../../styles/Buttons';
+
+/* COMPONENTS */
 import DropdownMenu from './DropdownMenu';
-import { HorisontalDots } from '../../styles/Buttons';
+import GravatarImage from '../../layout/Gravatar';
 
-function Activity({ boardIndex, activity, columnID, index, color }) {
-    const { id, title, content, date, notification, members } = activity;
+import { deleteActivity } from '../../actions';
 
+// Component for rendering each activity.
+const Activity = ({
+    boardIndex,
+    activity,
+    columnID,
+    index,
+    color,
+    deleteActivity,
+}) => {
     const [dropdownShown, setDropdownShown] = useState(false);
+    const {
+        _id,
+        title,
+        content,
+        date,
+        noteContent,
+        noteColor,
+        members,
+    } = activity;
+
+    // "Global" modal is created in parent component, gets information from current scope.
+    // Modal information associated with current scope Activity.
+    let modalContent = {
+        scope: 'activity',
+        action: 'edit',
+        boardID: boardIndex,
+        columnID: columnID,
+        activityID: _id,
+        color: color,
+        content: activity,
+    };
+
+    // Delete activity with current ID.
+    const deleteContent = () => {
+        deleteActivity(_id, columnID);
+    };
 
     return (
-        <Draggable draggableId={id} index={index}>
+        <Draggable draggableId={_id} index={index}>
             {(provided, snapshot) => {
                 return (
                     <Container
@@ -20,27 +58,19 @@ function Activity({ boardIndex, activity, columnID, index, color }) {
                         ref={provided.innerRef}
                         isDragging={snapshot.isDragging}
                     >
-                        {notification[0].content && (
-                            <Notification BgColor={notification[0].color}>
-                                {notification[0].content}
+                        {noteContent && (
+                            <Notification BgColor={noteColor}>
+                                {noteContent}
                             </Notification>
                         )}
-                        <HorisontalDots
-                            onClick={() => {
-                                setDropdownShown(true);
-                            }}
+                        <DropdownButton
+                            onClick={() => setDropdownShown(true)}
                         />
                         <DropdownMenu
                             dropdownShown={dropdownShown}
                             setDropdownShown={setDropdownShown}
-                            content={{
-                                scope: 'activity',
-                                action: 'edit',
-                                boardID: boardIndex,
-                                columnID: columnID,
-                                activityID: id,
-                                color: color,
-                            }}
+                            content={modalContent}
+                            deleteContent={deleteContent}
                         />
 
                         <Handle {...provided.dragHandleProps}>
@@ -67,7 +97,7 @@ function Activity({ boardIndex, activity, columnID, index, color }) {
             }}
         </Draggable>
     );
-}
+};
 
 const mapStateToProps = (state) => {
     return {
@@ -75,7 +105,7 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, {})(Activity);
+export default connect(mapStateToProps, { deleteActivity })(Activity);
 
 const Container = styled.div`
     position: relative;
@@ -139,6 +169,7 @@ const BottomContainer = styled.div`
 `;
 
 const MembersContainer = styled.div`
+    margin-left: 10px;
     img {
         margin-right: 0 !important;
         position: relative;

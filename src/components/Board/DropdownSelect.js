@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { getAuthenticatedUser } from '../../utils/Helpers';
+
+/* STYLES */
 import styled from 'styled-components';
-import GravatarImage from '../../layout/Gravatar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 
-function DropdownSelect({ users, selected, type, handleChange }) {
+/* COMPONENTS */
+import GravatarImage from '../../layout/Gravatar';
+
+// Component to render a selectmenu for selecting users.
+// "includeself" is used to determand if logged in user must always be selected (cannot remove self).
+const DropdownSelect = ({
+    includeSelf,
+    users,
+    selected,
+    type,
+    handleChange,
+}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const toggleOpen = () => setIsOpen(!isOpen);
 
     useEffect(() => {
+        if (includeSelf && users.length > 0) {
+            const authUser = users.find(
+                (user) => user.email === getAuthenticatedUser().email
+            );
+            if (!selectedOptions.includes(authUser)) {
+                handleChange(type, [authUser, ...selectedOptions]);
+                return setSelectedOptions([authUser, ...selectedOptions]);
+            }
+        }
         setSelectedOptions(selected);
-    }, [selected]);
+    }, [selected, users]);
 
     const onOptionClicked = (value) => () => {
         let newOptions = [...selectedOptions, value];
@@ -21,13 +43,16 @@ function DropdownSelect({ users, selected, type, handleChange }) {
     };
 
     const removeSelected = (selected) => {
+        if (includeSelf && selected.email === getAuthenticatedUser().email) {
+            return;
+        }
+
         let newSelected = selectedOptions.filter((user) => {
             return user.email !== selected.email;
         });
         setSelectedOptions(newSelected);
         handleChange(type, newSelected);
     };
-    console.log(selectedOptions);
 
     const userList = () => {
         return users.map((user) => {
@@ -89,7 +114,7 @@ function DropdownSelect({ users, selected, type, handleChange }) {
             )}
         </DropDownContainer>
     );
-}
+};
 
 export default DropdownSelect;
 

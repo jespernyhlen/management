@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import axios from 'axios';
 import { isAuthenticated } from '../utils/Helpers';
-import Notification from '../components/Notification';
+
+/* STYLES */
 import {
     FormGroup,
     FormContainer,
@@ -12,19 +13,18 @@ import {
     Label,
     TextWithLink,
 } from '../styles/FormStyles';
-import { ButtonContainer, Button } from '../styles/Buttons';
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faUser,
     faUnlockAlt,
     faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
+import { ButtonContainer, Button } from '../styles/Buttons';
 
-const API_URL =
-    process.env.REACT_APP_ENVIRONMENT === 'development'
-        ? 'http://localhost:8888/api'
-        : process.env.REACT_APP_API;
+/* COMPONENTS */
+import Notification from '../components/Notification';
+
+import { API_URL } from '../constants';
 
 const Register = ({ history }) => {
     const [values, setValues] = useState({

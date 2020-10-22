@@ -19,12 +19,12 @@ import {
     MOVE_ACTIVITY,
 } from '../actions/types';
 
+import { ObjectID } from 'bson';
+
 const INITIAL_STATE = {
     isInitialized: false,
     isSaved: true,
     boardIndex: 0,
-    activeActivity: {},
-    activeColumn: {},
     boards: [],
 };
 
@@ -46,22 +46,24 @@ export default (state = INITIAL_STATE, action) => {
         }
         case ADD_BOARD: {
             stateCopy = { ...state };
-            console.log(state.boards[0]);
 
             if (!action.board.title) return { ...state };
+
+            const newID = new ObjectID();
+            const ID = newID.toString();
 
             stateCopy.boards.push({
                 title: action.board.title,
                 activities: [],
                 columns: [
                     {
-                        id: 'column-1',
+                        _id: ID,
                         title: 'Example',
                         color: '#635CA2',
                         activityIDs: [],
                     },
                 ],
-                columnOrder: ['column-1'],
+                columnOrder: [ID],
             });
             return {
                 ...stateCopy,
@@ -83,14 +85,14 @@ export default (state = INITIAL_STATE, action) => {
         case SET_BOARDS: {
             return {
                 ...state,
+                boardIndex: 0,
                 boards: action.boards,
             };
         }
 
         case UPDATE_BOARD: {
             stateCopy = { ...state };
-
-            let ID = action.board.id;
+            let ID = action.board._id;
             let newTitle = action.board.title;
 
             stateCopy.boards.map((board) => {
@@ -107,7 +109,6 @@ export default (state = INITIAL_STATE, action) => {
 
         case DELETE_BOARD: {
             stateCopy = { ...state };
-
             stateCopy.boards.splice(action.boardID, 1);
 
             return {
@@ -117,7 +118,6 @@ export default (state = INITIAL_STATE, action) => {
             };
         }
         case SET_BOARDINDEX: {
-            console.log(action.index);
             return {
                 ...state,
                 boardIndex: action.index,
@@ -129,15 +129,14 @@ export default (state = INITIAL_STATE, action) => {
             let currentBoard = stateCopy.boards[state.boardIndex];
 
             if (!action.column.title) return { ...state };
-
             currentBoard.columns.push({
-                id: action.column.id,
+                _id: action.column._id,
                 title: action.column.title,
                 color: action.column.color,
                 activityIDs: [],
             });
 
-            currentBoard.columnOrder.push(action.column.id);
+            currentBoard.columnOrder.push(action.column._id);
             return {
                 ...stateCopy,
                 isSaved: false,
@@ -147,11 +146,11 @@ export default (state = INITIAL_STATE, action) => {
         case UPDATE_COLUMN: {
             stateCopy = { ...state };
             let currentBoard = stateCopy.boards[state.boardIndex];
-            let ID = action.column.id;
+            let ID = action.column._id;
             let newColumn = action.column;
 
             currentBoard.columns = currentBoard.columns.map((column) => {
-                if (column.id === ID) {
+                if (column._id === ID) {
                     return (column = newColumn);
                 }
                 return column;
@@ -167,22 +166,21 @@ export default (state = INITIAL_STATE, action) => {
             stateCopy = { ...state };
             let currentBoard = stateCopy.boards[state.boardIndex];
             let columnID = action.columnID;
-            console.log(stateCopy);
 
             // Remove Activity from column
             let column = currentBoard.columns.find(
-                (column) => column.id === columnID
+                (column) => column._id === columnID
             );
             let activityIDs = column.activityIDs;
 
             currentBoard.activities = currentBoard.activities.filter(
-                (activity) => !activityIDs.includes(activity.id)
+                (activity) => !activityIDs.includes(activity._id)
             );
             currentBoard.columnOrder = currentBoard.columnOrder.filter(
                 (column) => column !== columnID
             );
             currentBoard.columns = currentBoard.columns.filter(
-                (column) => column.id !== columnID
+                (column) => column._id !== columnID
             );
 
             return {
@@ -193,14 +191,13 @@ export default (state = INITIAL_STATE, action) => {
 
         case SET_COLUMN: {
             stateCopy = { ...state };
-            console.log(stateCopy);
 
             let ID = action.columnID;
             let columns = stateCopy.boards[state.boardIndex].columns;
             let column = {};
 
             if (ID) {
-                column = columns.find((column) => column.id === ID);
+                column = columns.find((column) => column._id === ID);
             }
 
             return {
@@ -230,7 +227,7 @@ export default (state = INITIAL_STATE, action) => {
             let activity = {};
 
             if (ID) {
-                activity = activities.find((activity) => activity.id === ID);
+                activity = activities.find((activity) => activity._id === ID);
             }
 
             return {
@@ -246,10 +243,10 @@ export default (state = INITIAL_STATE, action) => {
             let activity = action.newActivity;
 
             let column = currentBoard.columns.find(
-                (column) => column.id === columnID
+                (column) => column._id === columnID
             );
 
-            column.activityIDs.push(activity.id);
+            column.activityIDs.push(activity._id);
             currentBoard.activities.push(activity);
 
             return {
@@ -261,12 +258,12 @@ export default (state = INITIAL_STATE, action) => {
         case UPDATE_ACTIVITY: {
             stateCopy = { ...state };
             let currentBoard = stateCopy.boards[state.boardIndex];
-            let ID = action.activity.id;
+            let ID = action.activity._id;
             let newActivity = action.activity;
 
             currentBoard.activities = currentBoard.activities.map(
                 (activity) => {
-                    if (activity.id === ID) return (activity = newActivity);
+                    if (activity._id === ID) return (activity = newActivity);
                     return activity;
                 }
             );
@@ -285,7 +282,7 @@ export default (state = INITIAL_STATE, action) => {
 
             // Remove Activity from column
             let column = currentBoard.columns.find(
-                (column) => column.id === columnID
+                (column) => column._id === columnID
             );
 
             let activityIDs = column.activityIDs;
@@ -294,10 +291,8 @@ export default (state = INITIAL_STATE, action) => {
 
             // Remove Activity from activities
             currentBoard.activities = currentBoard.activities.filter(
-                (activity) => activity.id !== activityID
+                (activity) => activity._id !== activityID
             );
-
-            console.log(currentBoard.activities);
 
             return {
                 ...stateCopy,
@@ -311,10 +306,10 @@ export default (state = INITIAL_STATE, action) => {
 
             let currentBoard = stateCopy.boards[state.boardIndex];
             let fromColumn = currentBoard.columns.find(
-                (column) => column.id === source.droppableId
+                (column) => column._id === source.droppableId
             );
             let toColumn = currentBoard.columns.find(
-                (column) => column.id === destination.droppableId
+                (column) => column._id === destination.droppableId
             );
 
             // If item is not dropped in same column as it was originally from
@@ -324,17 +319,18 @@ export default (state = INITIAL_STATE, action) => {
 
                 fromActivityIDs.splice(source.index, 1);
                 toActivityIDs.splice(destination.index, 0, draggableID);
+
                 return {
                     ...stateCopy,
                     isSaved: false,
                 };
             }
+
             // If item is dropped in same column as it was originally from
             let fromActivityIDs = fromColumn.activityIDs;
 
             fromActivityIDs.splice(source.index, 1);
             fromActivityIDs.splice(destination.index, 0, draggableID);
-
             return {
                 ...stateCopy,
                 isSaved: false,
