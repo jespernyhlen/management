@@ -29,8 +29,6 @@ import {
 
 import { API_URL } from '../constants';
 
-const token = getCookie('token');
-
 const TrelloTeam = ({
     isSaved,
     setIsSaved,
@@ -48,6 +46,9 @@ const TrelloTeam = ({
         team: {},
         btnText: 'Save Changes',
     });
+
+    const token = getCookie('token');
+
     const [dropdownShown, setDropdownShown] = useState(false);
     const currentBoard = boards[boardIndex];
     const { pathname } = useLocation();

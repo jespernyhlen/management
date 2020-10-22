@@ -35,8 +35,6 @@ import { API_URL } from '../../constants';
 
 import { openModal, setIsSaved, setUsers } from '../../actions';
 
-const token = getCookie('token');
-
 // Form used for CRUD of Boards.
 // Depending on Scope (Board, Column, Activity) displays different inputfields.
 const StandardForm = (props) => {
@@ -60,6 +58,7 @@ const StandardForm = (props) => {
     const { content } = modal;
 
     const teamPath = match.path.split('/')[1] === 'teams';
+    const token = getCookie('token');
 
     useEffect(() => {
         // If on teampath, get current users of team.

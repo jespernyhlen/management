@@ -27,8 +27,6 @@ import Notification from '../components/Notification';
 
 import { API_URL } from '../constants';
 
-const token = getCookie('token');
-
 const Private = ({ history }) => {
     const [values, setValues] = useState({
         role: '',
@@ -38,6 +36,7 @@ const Private = ({ history }) => {
         buttonText: 'Update',
         isLoading: true,
     });
+    const token = getCookie('token');
 
     useEffect(() => {
         axios({

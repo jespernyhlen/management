@@ -19,13 +19,13 @@ import { setTeam, setTeams, openModal } from '../actions';
 
 import { API_URL } from '../constants';
 
-const token = getCookie('token');
-
 const Teams = ({ teams, openModal, modal, setTeams }) => {
     const [values, setValues] = useState({
         isLoading: true,
         teams: [],
     });
+
+    const token = getCookie('token');
 
     useEffect(() => {
         // Get board associated with logged in user ID.
